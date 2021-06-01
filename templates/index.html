@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sun</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+<div>data: {{data}}</div>
+
+<div class="row">
+    <div class="col-md-2">
+        <input type="text" name="From" id="From" class="form-control" placeholder="From Date"/>
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="to" id="to" class="form-control" placeholder="to Date"/>
+    </div>
+    <div class="col-md-8">
+        <input type="button" name="range" id="range" value="조회" class="btn btn-success"/>
+    </div>
+</div>
+<br/>
+
+ <div class="card-deck">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Chart01</h5>
+        <p class="card-text">1번 차트</p>
+        <a href="/chart01" class="btn btn-primary">Go Chart01</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Chart02</h5>
+        <p class="card-text">2번 차트</p>
+        <a href="/chart02" class="btn btn-primary">Go Chart02</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Chart03</h5>
+        <p class="card-text">3번 차트</p>
+        <a href="/chart02" class="btn btn-primary">Go Chart03</a>
+      </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function (){
+        $.datepicker.setDefaults({
+            dateFormat:'yy-mm-dd'
+        });
+        $(function () {
+            $("#From").datepicker();
+            $("#to").datepicker();
+        });
+        $("#range").click(function (){
+            var From = $("#From").val();
+            var to = $("#to").val();
+            // console.log("From: " + From);
+            // console.log("to: " + to);
+            if(From != '' && to != '') {
+                if(From < to) {
+                    alert("Good");
+                }else {
+                    alert("Please Check the Date");
+                }
+            } else {
+                alert("Please Select the Date");
+            }
+        })
+    });
+</script>
+</body>
+</html>
