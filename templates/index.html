@@ -94,11 +94,11 @@
                                         console.log(d2s_m)
                                     }
                                 }
-                                if (d1s_m.toString().length==1) {
-                                    d1s_m = d1s_m.toString() + "0"
+                                if (d1s_m<10) {
+                                    d1s_m = "0" + d1s_m.toString()
                                 }
-                                if (d2s_m.toString().length==1) {
-                                    d2s_m = d2s_m.toString() + "0"
+                                if (d2s_m<10) {
+                                    d2s_m = "0" + d2s_m.toString()
                                 }
                                 console.log(d1s[0])
                                 console.log(d1s[2] + '-' + d1s_m + '-' + d1s[1] + " 00:00:00")
