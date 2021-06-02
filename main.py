@@ -12,9 +12,13 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    # data = pd.read_csv(".csv")
-    return render_template("index.html")
+    data = pd.read_csv("submission_0529.csv")
+    return render_template("index.html", data=data)
+
+@app.route("/map")
+def Navermap():
+    return render_template("view/map.html")
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(port=5000)
+    app.run(port=8080)
