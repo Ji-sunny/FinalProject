@@ -57,14 +57,42 @@
 <!--    </div>-->
 <!--</div>-->
 
-    <div>
-        <div id="col">
-            <!-- xychart2는 나오는데 xychart1이 안나오는 상황! -->
-            <div id="xychart_1" style="height:500px;"></div>
-            <div id="xychart_2" style="height:500px;"></div>
+<div class="container-fluid">
+    <div class="header">
+        <h1>동서발전 태양광 발전 예측 시각화</h1>
+    </div>
+    <br>
+    <div class="row">
+        <ul class="col" style="list-style:none;">
+            <li class="col-lg"><p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel vehicula mi. Suspendisse eleifend porta bibendum.
+                Aliquam tempor dui nec erat volutpat suscipit sit amet non tortor. Donec est massa, volutpat ac metus malesuada, varius
+                ornare eros. Morbi tempor ut libero a dapibus. Morbi quis ex sem. Duis euismod ut eros sit amet feugiat. Aliquam mattis
+                tincidunt erat a maximus. Nullam iaculis dui nec eros tempor rutrum. Nam posuere metus vel diam luctus, id sodales ligula
+                tincidunt. Maecenas porttitor tempor neque, sollicitudin commodo est tristique id. Nullam velit erat, malesuada sed mi eget,
+                ullamcorper tempor turpis. Donec bibendum leo odio, vel laoreet turpis pretium vitae. Aliquam augue lorem, lobortis vel
+                lectus id, sagittis pulvinar nibh.
+                Aenean quis accumsan nibh. Fusce at euismod eros. Nunc consectetur accumsan sem, quis tempor sapien laoreet eu. Ut vel
+                tellus vitae risus porttitor placerat. Morbi a pretium neque. Proin eu quam non sem convallis feugiat. Sed eleifend
+                ullamcorper aliquam.
+            </p></li>
+        </ul>
+        <div class="col-lg-8">
+            <ul class="nav nav-tabs" style="list-style:none;">
+                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#">온도</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#">습도</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#">일조</a></li>
+                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#">일사</a></li>
+            </ul>
+            <ul style="list-style:none;">
+                <li><div class="chart" id="xychart_1" style="height: 500px;"></div></li>
+                <li><div class="chart" id="xychart_2" style="height: 500px;"></div></li>
+            </ul>
         </div>
     </div>
-    <script src="/static/js/XYChart_1.js"></script>
-    <script src="/static/js/XYChart_2.js"></script>
+</div>
+
+<script src="/static/js/XYChart_1.js"></script>
+<script src="/static/js/XYChart_2.js"></script>
 </body>
 </html>

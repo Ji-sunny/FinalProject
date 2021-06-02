@@ -1,9 +1,14 @@
 #xychart_1 {
-    width: 100%;
+    width: 60%;
     height: 500px;
 }
 
 #xychart_2 {
-    width: 100%;
+    width:60%;
     height: 500px;
+}
+
+ul {
+    list-style:none;
+    padding-left:0px;
 }
