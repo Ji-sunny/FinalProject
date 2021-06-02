@@ -89,6 +89,8 @@ function getClickHandler(seq) {
             infoWindow.close();
         } else {
             infoWindow.open(map, marker);
+            console.log(marker);
+            $("#check").text(marker.title);
         }
     }
 }

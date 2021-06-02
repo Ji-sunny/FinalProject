@@ -29,6 +29,14 @@ def Navermap():
     # print(md)
     return render_template("view/map.html")
 
+@app.route("/item_request", methods=['POST'])
+def get_item():
+    value1 = request.form['fromdate']
+    value2 = request.form['todate']
+    print("fromdate" + value1)
+    print(value2)
+    return render_template("index.html")
+
 if __name__ == "__main__":
     app.debug = True
     app.run(port=8080)
