@@ -12,8 +12,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    data = pd.read_csv(".csv")
-    return render_template("index.html", data=data)
+    # data = pd.read_csv(".csv")
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.debug = True
