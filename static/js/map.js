@@ -38,7 +38,7 @@ for (var key in MARKER_SPRITE_POSITION) {
     });
 
     var infoWindow = new naver.maps.InfoWindow({
-        content: '<div style="width:200px;text-align:center;padding:5px;">This is <b>"'+ key +'"</b>.</div>'
+        content: '<div style="width:150px;text-align:center;padding:10px;">This is <b>"'+ key +'"</b>.</div>'
     });
 
     markers.push(marker);

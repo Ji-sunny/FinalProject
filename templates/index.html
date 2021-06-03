@@ -49,7 +49,7 @@
     <div class="row">
         <ul class="col" style="list-style:none;">
             <li class="col-lg"><p>
-                <input id="litepicker" type="hidden"></input>
+                <input id="litepicker"/>
                 <script>
                     var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                     function formatDate(date) {
@@ -119,6 +119,7 @@
 
             <!--지도 표시 구역-->
             <li><div id="map" style="width:100%;height:400px;"></div></li>
+            <li><div id="check"> HELLO</div></li>
 
         </ul>
         <div class="col-lg-8">
@@ -127,21 +128,12 @@
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#xychart_1">습도</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#xychart_1">일조</a></li>
                 <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#xychart_1">일사</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">태양광</a>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="#">당진수상 태양광</a>
-                      <a class="dropdown-item" href="#">당진자재창고태양광</a>
-                      <a class="dropdown-item" href="#">당진태양광</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="">울산태양광</a>
-                    </div>
-                </li>
-
             </ul>
             <div class="tab-content">
                 <ul class="tab-pane fade show active" style="list-style:none;">
                     <li><div class="chart" id="xychart_1" style="height: 500px;"></div></li>
+                    <hr/>
+                    <li>태양광</li>
                     <li><div class="chart" id="xychart_2" style="height: 500px;"></div></li>
                 </ul>
             </div>
@@ -149,7 +141,9 @@
         </div>
     </div>
 </div>
+<sript>
 
+</sript>
 <script src="/static/js/XYChart_1.js"></script>
 <script src="/static/js/XYChart_2.js"></script>
 <script src="/static/js/map.js"></script>
