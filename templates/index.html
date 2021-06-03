@@ -10,15 +10,9 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <!-- dual_daterangepicker -->
-    <!--        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>-->
-    <!--        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
-    <!--        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>-->
-    <!--        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />-->
-    <!--    <link rel="stylesheet" type="text/css" href="/static/css/dual_daterangepicker.css">-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     <!-- single daterangepicker -->
     <!-- litepicker -->
@@ -40,7 +34,6 @@
     <!-- 아래의 naver 키를 넣으면 됩니다. -->
 </head>
 <body>
-
 <div class="container-fluid">
     <div class="header">
         <h1>동서발전 태양광 발전 예측 시각화</h1>
@@ -49,73 +42,10 @@
     <div class="row">
         <ul class="col" style="list-style:none;">
             <li class="col-lg"><p>
-                <input id="litepicker"/>
-                <script>
-                    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                    function formatDate(date) {
-                        var d = new Date(date),
-                            month = '' + (d.getMonth() + 1),
-                            day = '' + d.getDate(),
-                            year = d.getFullYear();
-
-                        if (month.length < 2)
-                            month = '0' + month;
-                        if (day.length < 2)
-                            day = '0' + day;
-
-                        return [year, month, day].join('-');
-                    }
-
-                    const picker = new Litepicker({
-                        element: document.getElementById('litepicker'),
-                        autoApply: false,
-                        singleMode: false,
-                        inlineMode: true, // 항상 열려있게
-                        lang: "ko-kr", // 언어 설정
-                        maxDays: 365, // 최대 선택 일자 수
-                        // scrollToDate: true,
-                        // showTooltip: true,
-                        // autoRefresh: true
-                        setup: (picker) => {
-                            picker.on('button:apply', (date1, date2) => {
-                                // console.log("APPLY 버튼 누름!")
-                                date_1 = date1.dateInstance.toString().substr(4,21)
-                                date_2 = date2.dateInstance.toString().substr(4,21)
-                                var d1s = date_1.split(' ')
-                                var d2s = date_2.split(' ')
-                                d1s_m = d1s[0]
-                                d2s_m = d2s[0]
-                                var step;
-                                for (step = 0; step < 12; step++) {
-                                    if (months[step] == d1s_m) {
-                                        d1s_m = (step+1)
-                                        console.log(d1s_m)
-                                    }
-                                    if (months[step] == d2s_m) {
-                                        d2s_m = (step+1)
-                                        console.log(d2s_m)
-                                    }
-                                }
-                                if (d1s_m<10) {
-                                    d1s_m = "0" + d1s_m.toString()
-                                }
-                                if (d2s_m<10) {
-                                    d2s_m = "0" + d2s_m.toString()
-                                }
-                                console.log(d1s[0])
-                                console.log(d1s[2] + '-' + d1s_m + '-' + d1s[1] + " 00:00:00")
-                                console.log(d2s[2] + '-' + d2s_m + '-' + d2s[1] + " 23:00:00")
-                            })
-                        }
-                    });
-
-
-                </script>
+                 <!-- single_daterangepicker -->
+                <input id="litepicker" type="hidden"></input>
+                <script src="/static/js/litepicker.js"></script>
             </p></li>
-            <!-- dual_daterangepicker -->
-            <!--                <input type="button" name="daterange" style="border-radius: 5px; border-color: whitesmoke; background-color: whitesmoke"/>-->
-            <!--                <script src="/static/js/dual_daterangepicker.js"></script>-->
-            <!-- single_daterangepicker -->
 
             <!--지도 표시 구역-->
             <li><div id="map" style="width:100%;height:400px;"></div></li>
@@ -132,12 +62,12 @@
             <div class="tab-content">
                 <ul class="tab-pane fade show active" style="list-style:none;">
                     <li><div class="chart" id="xychart_1" style="height: 500px;"></div></li>
+
                     <hr/>
                     <li>태양광</li>
                     <li><div class="chart" id="xychart_2" style="height: 500px;"></div></li>
                 </ul>
             </div>
-
         </div>
     </div>
 </div>
