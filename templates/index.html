@@ -32,8 +32,13 @@
     <script src="//cdn.amcharts.com/lib/4/maps.js"></script>
     <script src="//cdn.amcharts.com/lib/4/geodata/worldLow.js"></script>
     <!-- 아래의 naver 키를 넣으면 됩니다. -->
+
+    <!-- 탭 누르면 데이터 콜 -->
+    <script src="/static/js/tabs.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
+
 <div class="container-fluid">
     <div class="header">
         <h1>동서발전 태양광 발전 예측 시각화</h1>
@@ -42,8 +47,8 @@
     <div class="row">
         <ul class="col" style="list-style:none;">
             <li class="col-lg"><p>
-                 <!-- single_daterangepicker -->
-                <input id="litepicker" type="hidden"></input>
+                <!-- single_daterangepicker -->
+                <input id="litepicker"></input>
                 <script src="/static/js/litepicker.js"></script>
             </p></li>
 
@@ -53,27 +58,71 @@
 
         </ul>
         <div class="col-lg-8">
-            <ul class="nav nav-tabs" style="list-style:none;">
-                <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#xychart_1">온도</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#xychart_1">습도</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#xychart_1">일조</a></li>
-                <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#xychart_1">일사</a></li>
+            <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" data-toggle="tab" id="temperature-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">온도</a>
+
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" id="humidity-tab" data-bs-target="#humidity" type="button" role="tab" aria-controls="pills-humidity" aria-selected="false">습도</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" id="hr-tab" data-bs-target="#hr" type="button" role="tab" aria-controls="pills-hr" aria-selected="false">일조</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" id="cloud-tab" data-bs-target="#cloud" type="button" role="tab" aria-controls="pills-cloud" aria-selected="false">전운량</a>
+                </li>
             </ul>
             <div class="tab-content">
                 <ul class="tab-pane fade show active" style="list-style:none;">
-                    <li><div class="chart" id="xychart_1" style="height: 500px;"></div></li>
-
-                    <hr/>
-                    <li>태양광</li>
-                    <li><div class="chart" id="xychart_2" style="height: 500px;"></div></li>
+                    <li id="temperature" role="tabpanel" aria-labelledby="pills-temperature-tab">
+                        <div class="chart" id="xychart_1" style="height: 350px;"></div>
+                    </li>
+                    <li id="humidity" role="tabpanel" aria-labelledby="pills-humidity-tab">
+                        <h3>태양광</h3>
+                        <div class="chart" id="xychart_2" style="height: 350px;"></div>
+                    </li>
                 </ul>
             </div>
         </div>
+
+        <!-- 임시 -->
+        <input type="button" id="execute" value="execute">
+        <script>
+            $('#execute').click(function(){
+                var time = $('#litepicker').val();
+                start_date = time.substr(0, 10) + " 00:00:00"
+                end_date = time.substr(13, 10) + " 23:00:00"
+                var location = $('#check')[0].innerHTML;
+                var column = document.getElementsByClassName("active")[0].innerText;
+                var postdata = {
+                    'time':time, 'location':location, 'column':column
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url_for("ajax")}}',
+                    data: JSON.stringify(postdata),
+                    dataType : 'JSON',
+                    contentType: "application/json",
+                    success: function(data){
+                        console.log("success")
+                        console.log("time start_date:", start_date)
+                        console.log("time end_date:", end_date)
+                        console.log("location:", location)
+                        console.log("column:", column)
+                    },
+                    error: function(request, status, error){
+                        console.log("failed")
+                        alert('ajax 통신 실패')
+                        alert(error);
+                    }
+                })
+            })
+        </script>
     </div>
 </div>
-<sript>
 
-</sript>
+
 <script src="/static/js/XYChart_1.js"></script>
 <script src="/static/js/XYChart_2.js"></script>
 <script src="/static/js/map.js"></script>

@@ -39,34 +39,8 @@ const picker = new Litepicker({
 
             start_date = d1s[2] + '-' + d1s_m + '-' + d1s[1] + " 00:00:00"
             end_date = d2s[2] + '-' + d2s_m + '-' + d2s[1] + " 23:00:00"
-        })
-    }
-});
 
-$("#button-apply").click(function (){
-    console.log("start: " + starttime);
-    console.log("end: " + endtime);
-        if(starttime != '' && endtime != '') {
-        if(starttime < endtime) {
-            $.ajax({
-                type : 'POST',
-                url : '/item_request',
-                data : {
-                    fromdate:starttime,
-                    todate:endtime
-                },
-                dataType : 'text',
-                success : function(result){
-                    alert("result = "+ result);
-                },
-                error : function(xtr,status,error){
-                    alert(xtr +":"+status+":"+error);
-                }
-            });
-        }else {
-            alert("Please Check the Date");
-        }
-    } else {
-        alert("Please Select the Date");
+
+        })
     }
 });

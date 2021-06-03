@@ -35,6 +35,8 @@ am4core.ready(function() {
     var chart = am4core.create("xychart_1", am4charts.XYChart);
     chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
+    // request data
+
     var data = [];
     var open = 100;
     var close = 250;
