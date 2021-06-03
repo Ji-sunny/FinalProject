@@ -28,12 +28,25 @@ def index():
 
 @app.route("/map")
 def Navermap():
-    # sql = """select TO_CHAR(timedate, 'YYYY-MM-DD HH24:MI:SS')as timetime, cloud from ulsan_fcst
-    #             where timedate <= '2021-9-10'
-    #             order by timetime"""
-    # md = oracle_db.read_sql(sql)
-    # print(md)
-    return render_template("view/map.html")
+    sql ="""select TO_CHAR(obs.timedate, 'YYYY')as year_,TO_CHAR(obs.timedate, 'MM') -1 as month_ , TO_CHAR(obs.timedate, 'DD')as day_ ,TO_CHAR(obs.timedate, 'HH24')as hour_,
+                obs.cloud as temp_obs, fc.cloud as temp_fc
+                from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
+                where obs.timedate between '2021-01-15' AND '2021-03-05'"""
+    # sql = """select TO_CHAR(timedate, 'YYYY-MM-DD HH24:MI:SS')as year_, obs.cloud as temp_obs, fc.cloud as temp_fc
+    #                 from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
+    #                 where obs.timedate between '2021-01-05' AND '2021-02-05'"""
+    dangjin_obs = oracle_db.read_sql(sql)
+    chart_data = []
+    # print(dangjin_obs)
+    # Date(2020, 5, 12), value1: 50, value2: 48
+    # date: new Date(2018, 0, i), open: open, close: close
+    for row in dangjin_obs.itertuples():
+        # print(row[1])
+        chart_data.append(f"{{date:new Date( {row[1]}, {row[2]}, {row[3]}, {row[4]}), open: {row[5]}, close: {row[6]} }}")
+            #중괄호를 그대로 만들기 위해 바깥에 {{ 두개로
+    # print(','.join(chart_data))
+    # print("--"*10)
+    return render_template("view/map.html", data=','.join(chart_data) )
 
 @app.route("/item_request", methods=['POST'])
 def get_item():
@@ -61,4 +74,4 @@ def ajax():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(port=5000)
+    app.run(port=8080)

@@ -1,6 +1,4 @@
-from sqlalchemy import types, create_engine
 import pandas as pd
-from sqlalchemy.sql.expression import table
 from dbmodule import conn
 
 conn = conn.conn()
@@ -44,4 +42,23 @@ class Database():
         # data 열이름 소문자처리
         data.columns = data.columns.str.lower()
         return data
-# ===============================IMDB===============================
+# ===============================weather===============================
+
+class Weather:
+    def __init__(self, timetime, temperature, humidity, sunshinehour, cloud):
+        self.timetime = timetime
+        self.temperature = temperature
+        self.humidity = humidity
+        self.sunshinehour = sunshinehour
+        self.cloud = cloud
+
+    def __str__(self):
+        return f"{self.timetime}, {self.temperature}, {self.humidity}, " \
+               f"{self.sunshinehour}, {self.cloud}"
+
+    def to_dict(self):
+        return {"timetime": self.timetime,
+                "temperature": self.temperature,
+                "humidity": self.humidity,
+                "sunshinehour": self.sunshinehour,
+                "cloud": self.cloud}
