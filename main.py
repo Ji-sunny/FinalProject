@@ -36,14 +36,12 @@ def Navermap():
     #                 from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
     #                 where obs.timedate between '2021-01-05' AND '2021-02-05'"""
     dangjin_obs = oracle_db.read_sql(sql)
+    print(dangjin_obs)
     chart_data = []
-    # print(dangjin_obs)
-    # Date(2020, 5, 12), value1: 50, value2: 48
     # date: new Date(2018, 0, i), open: open, close: close
     for row in dangjin_obs.itertuples():
         # print(row[1])
         chart_data.append(f"{{date:new Date( {row[1]}, {row[2]}, {row[3]}, {row[4]}), open: {row[5]}, close: {row[6]} }}")
-            #중괄호를 그대로 만들기 위해 바깥에 {{ 두개로
     # print(','.join(chart_data))
     # print("--"*10)
     return render_template("view/map.html", data=','.join(chart_data) )
@@ -70,7 +68,46 @@ def ajax():
     #     return jsonify(result = "success", result2= data)
     data = request.get_json()
     print(data)
-    return jsonify(result = "success", result2= data)
+    start = data['start']
+    end = data['end']
+    location = data['location']
+    column = data['column']
+    if '당진' in location:
+        data = get_dangjin(start, end, column)
+    elif '울산' in location:
+        data = get_ulsan(start, end, column)
+
+    # print(data)
+    chart_data = []
+    # date: new Date(2018, 0, i), open: open, close: close
+    for row in data.itertuples():
+        # print(row[1])
+        chart_data.append(f"{{date:new Date( {row[1]}, {row[2]}, {row[3]}, {row[4]}), open: {row[5]}, close: {row[6]} }}")
+    print("--" * 10)
+    print(','.join(chart_data))
+    return jsonify(data=','.join(chart_data) )
+
+def get_dangjin(start, end, column):
+    if '온도' in column:
+        column = 'temperature'
+    elif '습도' in column:
+        column = 'humidity'
+    elif '일조' in column:
+        column = 'sunshinehour'
+    else:
+        column = 'cloud'
+    print(column)
+    sql = """select TO_CHAR(obs.timedate, 'YYYY')as year_,TO_CHAR(obs.timedate, 'MM') -1 as month_ , TO_CHAR(obs.timedate, 'DD')as day_ ,TO_CHAR(obs.timedate, 'HH24')as hour_, obs.{2} , fc.{2}
+                from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
+                where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
+    data = oracle_db.read_sql(sql)
+    return data
+
+
+def get_ulsan(start, end, column):
+    data = ""
+    return data
+
 
 if __name__ == "__main__":
     app.debug = True
