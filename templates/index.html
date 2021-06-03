@@ -91,12 +91,12 @@
         <script>
             $('#execute').click(function(){
                 var time = $('#litepicker').val();
-                start_date = time.substr(0, 10) + " 00:00:00"
-                end_date = time.substr(13, 10) + " 23:00:00"
+                start = time.substr(0, 10)
+                end = time.substr(13, 10)
                 var location = $('#check')[0].innerHTML;
                 var column = document.getElementsByClassName("active")[0].innerText;
                 var postdata = {
-                    'time':time, 'location':location, 'column':column
+                    'start':start, 'end':end, 'time':time, 'location':location, 'column':column
                 }
                 $.ajax({
                     type: 'POST',
@@ -106,8 +106,8 @@
                     contentType: "application/json",
                     success: function(data){
                         console.log("success")
-                        console.log("time start_date:", start_date)
-                        console.log("time end_date:", end_date)
+                        console.log("start:", start)
+                        console.log("end:", end)
                         console.log("location:", location)
                         console.log("column:", column)
                     },
