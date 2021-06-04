@@ -23,34 +23,6 @@ def get_column_data(column, table):
 def index():
     return render_template("index.html")
 
-@app.route("/map")
-def Navermap():
-    sql ="""select TO_CHAR(obs.timedate, 'YYYY')as year_,TO_CHAR(obs.timedate, 'MM') -1 as month_ , TO_CHAR(obs.timedate, 'DD')as day_ ,TO_CHAR(obs.timedate, 'HH24')as hour_,
-                obs.cloud as temp_obs, fc.cloud as temp_fc
-                from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
-                where obs.timedate between '2021-01-15' AND '2021-03-05'"""
-    # sql = """select TO_CHAR(timedate, 'YYYY-MM-DD HH24:MI:SS')as year_, obs.cloud as temp_obs, fc.cloud as temp_fc
-    #                 from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
-    #                 where obs.timedate between '2021-01-05' AND '2021-02-05'"""
-    dangjin_obs = oracle_db.read_sql(sql)
-    print(dangjin_obs)
-    chart_data = []
-    # date: new Date(2018, 0, i), open: open, close: close
-    for row in dangjin_obs.itertuples():
-        # print(row[1])
-        chart_data.append(f"{{date:new Date( {row[1]}, {row[2]}, {row[3]}, {row[4]}), open: {row[5]}, close: {row[6]} }}")
-    # print(','.join(chart_data))
-    # print("--"*10)
-    return render_template("view/map.html", data=','.join(chart_data) )
-
-@app.route("/item_request", methods=['POST'])
-def get_item():
-    value1 = request.form['fromdate']
-    value2 = request.form['todate']
-    print("fromdate" + value1)
-    print(value2)
-    return render_template("index.html")
-
 @app.route('/ajax', methods=['POST'])
 def ajax():
     # if request.method == 'GET':
@@ -64,7 +36,6 @@ def ajax():
     #
     #     return jsonify(result = "success", result2= data)
     data = request.get_json()
-    print(data)
     start = data['start']
     end = data['end']
     location = data['location']
@@ -75,11 +46,11 @@ def ajax():
     elif '울산' in location:
         data = get_ulsan(start, end, column)
         energy_data = get_ulsan_energy(start, end, location)
-    # print(data)
+
     chart_data = []
     energy_chart_data = []
     # date: new Date(2018, 0, i), open: open, close: close
-
+    print(data)
     for row in data.itertuples():
         chart_data.append({"date":row[1].to_pydatetime(), "open":row[2], "close":row[3]})
     for row in energy_data.itertuples():
@@ -87,7 +58,7 @@ def ajax():
     print("--" * 10)
     return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data})
 
-def get_dangjin(start, end, column):
+def get_dangjin(start, end, column, change=0):
     if '온도' in column:
         column = 'temperature'
     elif '습도' in column:
@@ -96,15 +67,17 @@ def get_dangjin(start, end, column):
         column = 'sunshinehour'
     else:
         column = 'cloud'
+        change = 1
     print(column)
-    sql = """select obs.timedate, obs.{2} , fc.{2}
-                from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
-                where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
+    sql = """select fc.timedate, NVL(obs.{2}, {3}) , fc.{2}
+                from dangjin_obs obs right outer join dangjin_fcst fc on obs.timedate = fc.timedate
+                where fc.timedate between '{0}' AND '{1}'
+                order by fc.timedate""".format(start, end, column, change)
     data = oracle_db.read_sql(sql)
     return data
 
 
-def get_ulsan(start, end, column):
+def get_ulsan(start, end, column, change=0):
     if '온도' in column:
         column = 'temperature'
     elif '습도' in column:
@@ -113,9 +86,11 @@ def get_ulsan(start, end, column):
         column = 'sunshinehour'
     else:
         column = 'cloud'
-    sql = """select obs.timedate, obs.{2} , fc.{2}
-                    from ulsan_obs obs join ulsan_fcst fc on obs.timedate = fc.timedate
-                    where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
+        change = 1
+    sql = """select fc.timedate, NVL(obs.{2}, {3}) , fc.{2}
+                    from ulsan_obs obs right outer join ulsan_fcst fc on obs.timedate = fc.timedate
+                    where fc.timedate between '{0}' AND '{1}'
+                    order by fc.timedate""".format(start, end, column, change)
     data = oracle_db.read_sql(sql)
     return data
 def get_dangjin_energy(start, end, location):
@@ -125,9 +100,10 @@ def get_dangjin_energy(start, end, location):
         location = 'dangjin_warehouse'
     elif '당진태양광' in location:
         location = 'dangjin'
-    sql = """select obs.timedate, obs.{2} , fc.{2}
-                    from energy_obs obs join energy_fcst fc on obs.timedate = fc.timedate
-                    where obs.timedate between '{0}' AND '{1}'""".format(start, end, location)
+    sql = """select fc.timedate, NVL(obs.{2}, 0) , fc.{2}
+                    from energy_obs obs right outer join energy_fcst fc on obs.timedate = fc.timedate
+                    where fc.timedate between '{0}' AND '{1}'
+                    order by fc.timedate""".format(start, end, location)
     energy_data = oracle_db.read_sql(sql)
     return energy_data
 
@@ -135,9 +111,10 @@ def get_dangjin_energy(start, end, location):
 def get_ulsan_energy(start, end, location):
     if '울산태양광' in location:
         location = 'ulsan'
-    sql = """select obs.timedate, obs.{2} , fc.{2}
-                    from energy_obs obs join energy_fcst fc on obs.timedate = fc.timedate
-                    where obs.timedate between '{0}' AND '{1}'""".format(start, end, location)
+    sql = """select fc.timedate, NVL(obs.{2},0) , fc.{2}
+                    from energy_obs obs right outer  join energy_fcst fc on obs.timedate = fc.timedate
+                    where fc.timedate between '{0}' AND '{1}'
+                    order by fc.timedate""".format(start, end, location)
 
     energy_data = oracle_db.read_sql(sql)
     return energy_data
@@ -145,4 +122,4 @@ def get_ulsan_energy(start, end, location):
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(port=5000)
+    app.run(port=8080)

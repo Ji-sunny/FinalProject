@@ -108,6 +108,8 @@
                     contentType: "application/json",
                     success: function(data){
                         console.log(data)
+                        if (data.chart_data.length == 0)
+                            alert("날씨 데이터가 없습니다.");
                         console.log("success")
                         console.log("start:", start)
                         console.log("end:", end)
@@ -135,9 +137,13 @@
 
                         chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
                         energy_chart.hiddenState.properties.opacity = 0;
-                        // request data
+                        // 범례
+                        chart.legend = new am4charts.Legend();
+                        chart.legend.useDefaultMarker = true;
+                        chart.legend.markers.template.disabled = true;
 
-                        console.log(chart_data)
+                        energy_chart.legend = new am4charts.Legend();
+                        energy_chart.legend.useDefaultMarker = true;
 
                         chart.data = chart_data;
                         energy_chart.data = energy_data;
@@ -155,21 +161,24 @@
                         series.dataFields.dateX = "date";
                         series.dataFields.openValueY = "open";
                         series.dataFields.valueY = "close";
-                        series.tooltipText = "open: {openValueY.value} close: {valueY.value}";
+                        series.tooltipText = "실제 날씨: {openValueY.value} 예측 날씨: {valueY.value}";
                         series.sequencedInterpolation = true;
                         series.fillOpacity = 0.3;
                         series.defaultState.transitionDuration = 1000;
                         series.tensionX = 0.8;
+                        series.name = "예측 날씨"
+                        series.legendSettings.labelText = "Series: [bold {color}]{name}[/]";
 
                         var energy_series = energy_chart.series.push(new am4charts.LineSeries());
                         energy_series.dataFields.dateX = "date";
                         energy_series.dataFields.openValueY = "open";
                         energy_series.dataFields.valueY = "close";
-                        energy_series.tooltipText = "open: {openValueY.value} close: {valueY.value}";
+                        energy_series.tooltipText = "태양광 발전량: {openValueY.value} 예측 태양광 발전량: {valueY.value}";
                         energy_series.sequencedInterpolation = true;
                         energy_series.fillOpacity = 0.3;
                         energy_series.defaultState.transitionDuration = 1000;
                         energy_series.tensionX = 0.8;
+                        energy_series.name = "예측 태양광 발전량"
 
                         var series2 = chart.series.push(new am4charts.LineSeries());
                         series2.dataFields.dateX = "date";
@@ -178,6 +187,8 @@
                         series2.defaultState.transitionDuration = 1500;
                         series2.stroke = chart.colors.getIndex(6);
                         series2.tensionX = 0.8;
+                        series2.name = "실제 날씨"
+                        series2.legendSettings.labelText = "Series: [bold {color}]{name}[/]";
 
                         var energy_series2 = energy_chart.series.push(new am4charts.LineSeries());
                         energy_series2.dataFields.dateX = "date";
@@ -186,6 +197,7 @@
                         energy_series2.defaultState.transitionDuration = 1500;
                         energy_series2.stroke = chart.colors.getIndex(6);
                         energy_series2.tensionX = 0.8;
+                        energy_series2.name = "태양광 발전량"
 
                         chart.cursor = new am4charts.XYCursor();
                         chart.cursor.xAxis = dateAxis;
