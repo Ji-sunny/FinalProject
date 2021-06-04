@@ -54,7 +54,7 @@
 
             <!--지도 표시 구역-->
             <li><div id="map" style="width:100%;height:400px;"></div></li>
-            <li><div id="check"> HELLO</div></li>
+            <li><div id="check">당진수상</div></li>
 
         </ul>
         <div class="col-lg-8">
@@ -89,8 +89,6 @@
         <!-- 임시 -->
         <input type="button" id="execute" value="execute">
         <script>
-
-
             $('#execute').click(function(){
                 var time = $('#litepicker').val();
                 start = time.substr(0, 10)
@@ -107,7 +105,6 @@
                     dataType : 'JSON',
                     contentType: "application/json",
                     success: function(data){
-                        document.getElementById("")
                         console.log(data)
                         console.log("success")
                         console.log("start:", start)
@@ -116,29 +113,41 @@
                         console.log("column:", column)
 
                         var result = [];
+                        var energy_result = [];
 
-                        for(var i in data)
-                            data[i]["date"] = new Date(data[i]["date"])
-                            result.push(data[i]);
+                        var chart_data = data.chart_data
+                        var energy_data = data.energy_chart_data
 
-                        console.log(result)
+                        for(var i in chart_data)
+                            chart_data[i]["date"] = new Date(chart_data[i]["date"])
+                            result.push(chart_data[i]);
+                        for(var i in energy_data)
+                            energy_data[i]["date"] = new Date(energy_data[i]["date"])
+                            energy_result.push(energy_data[i]);
 
                         am4core.useTheme(am4themes_animated);
                         // Themes end
 
                         var chart = am4core.create("xychart_1", am4charts.XYChart);
-                        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+                        var energy_chart = am4core.create("xychart_2", am4charts.XYChart);
 
+                        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+                        energy_chart.hiddenState.properties.opacity = 0;
                         // request data
 
-                        console.log(data)
+                        console.log(chart_data)
 
-                        chart.data = data;
+                        chart.data = chart_data;
+                        energy_chart.data = energy_data;
 
                         var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+                        var energy_dateAxis = energy_chart.xAxes.push(new am4charts.DateAxis());
 
                         var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+                        var energy_valueAxis = energy_chart.yAxes.push(new am4charts.ValueAxis());
+
                         valueAxis.tooltip.disabled = true;
+                        energy_valueAxis.tooltip.disabled = true;
 
                         var series = chart.series.push(new am4charts.LineSeries());
                         series.dataFields.dateX = "date";
@@ -150,6 +159,16 @@
                         series.defaultState.transitionDuration = 1000;
                         series.tensionX = 0.8;
 
+                        var energy_series = energy_chart.series.push(new am4charts.LineSeries());
+                        energy_series.dataFields.dateX = "date";
+                        energy_series.dataFields.openValueY = "open";
+                        energy_series.dataFields.valueY = "close";
+                        energy_series.tooltipText = "open: {openValueY.value} close: {valueY.value}";
+                        energy_series.sequencedInterpolation = true;
+                        energy_series.fillOpacity = 0.3;
+                        energy_series.defaultState.transitionDuration = 1000;
+                        energy_series.tensionX = 0.8;
+
                         var series2 = chart.series.push(new am4charts.LineSeries());
                         series2.dataFields.dateX = "date";
                         series2.dataFields.valueY = "open";
@@ -158,10 +177,21 @@
                         series2.stroke = chart.colors.getIndex(6);
                         series2.tensionX = 0.8;
 
+                        var energy_series2 = energy_chart.series.push(new am4charts.LineSeries());
+                        energy_series2.dataFields.dateX = "date";
+                        energy_series2.dataFields.valueY = "open";
+                        energy_series2.sequencedInterpolation = true;
+                        energy_series2.defaultState.transitionDuration = 1500;
+                        energy_series2.stroke = chart.colors.getIndex(6);
+                        energy_series2.tensionX = 0.8;
+
                         chart.cursor = new am4charts.XYCursor();
                         chart.cursor.xAxis = dateAxis;
                         chart.scrollbarX = new am4core.Scrollbar();
 
+                        energy_chart.cursor = new am4charts.XYCursor();
+                        energy_chart.cursor.xAxis = dateAxis;
+                        energy_chart.scrollbarX = new am4core.Scrollbar();
                     }
                 })
             });
@@ -169,10 +199,6 @@
         </script>
     </div>
 </div>
-
-
-
-<script src="/static/js/XYChart_2.js"></script>
 <script src="/static/js/map.js"></script>
 </body>
 </html>
