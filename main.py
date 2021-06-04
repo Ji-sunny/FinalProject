@@ -21,10 +21,7 @@ def get_column_data(column, table):
 
 @app.route("/")
 def index():
-    data = get_column_data("temperature", "dangjin_fcst")
-    data = data["temperature"].values.tolist()
-
-    return render_template("index.html", data=data)
+    return render_template("index.html")
 
 @app.route("/map")
 def Navermap():
@@ -88,7 +85,7 @@ def ajax():
     for row in energy_data.itertuples():
         energy_chart_data.append({"date":row[1].to_pydatetime(), "open":row[2], "close":row[3]})
     print("--" * 10)
-    return jsonify(chart_data)
+    return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data})
 
 def get_dangjin(start, end, column):
     if '온도' in column:
