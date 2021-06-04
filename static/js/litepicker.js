@@ -2,14 +2,14 @@ var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 
 const picker = new Litepicker({
     element: document.getElementById('litepicker'),
-    autoApply: false,
+    autoApply: true,
     singleMode: false,
     inlineMode: true, // 항상 열려있게
     lang: "ko-kr", // 언어 설정
     maxDays: 365, // 최대 선택 일자 수
     // scrollToDate: true,
     // showTooltip: true,
-    // autoRefresh: true
+    // autoRefresh: true,
     setup: (picker) => {
         picker.on('button:apply', (date1, date2) => {
             date_1 = date1.dateInstance.toString().substr(4,21)
