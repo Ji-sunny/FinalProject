@@ -74,18 +74,24 @@ def ajax():
     column = data['column']
     if '당진' in location:
         data = get_dangjin(start, end, column)
+        energy_data = get_dangjin_energy(start, end, column)
     elif '울산' in location:
         data = get_ulsan(start, end, column)
+        energy_data = get_ulsan_energy()
 
     # print(data)
     chart_data = []
+    energy_chart_data = []
     # date: new Date(2018, 0, i), open: open, close: close
     for row in data.itertuples():
         # print(row[1])
         chart_data.append(f"{{date:new Date( {row[1]}, {row[2]}, {row[3]}, {row[4]}), open: {row[5]}, close: {row[6]} }}")
+    for row in energy_data.itertuples():
+        # print(row[1])
+        energy_chart_data.append(f"{{date:new Date( {row[1]}, {row[2]}, {row[3]}, {row[4]}), open: {row[5]}, close: {row[6]} }}")
     print("--" * 10)
     print(','.join(chart_data))
-    return jsonify(data=','.join(chart_data) )
+    return jsonify(data=','.join(chart_data), energy_data=','.join(energy_chart_data))
 
 def get_dangjin(start, end, column):
     if '온도' in column:
@@ -97,17 +103,69 @@ def get_dangjin(start, end, column):
     else:
         column = 'cloud'
     print(column)
-    sql = """select TO_CHAR(obs.timedate, 'YYYY')as year_,TO_CHAR(obs.timedate, 'MM') -1 as month_ , TO_CHAR(obs.timedate, 'DD')as day_ ,TO_CHAR(obs.timedate, 'HH24')as hour_, obs.{2} , fc.{2}
-                from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
-                where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
+    sql = """select 
+                TO_CHAR(obs.timedate, 'YYYY')as year_,
+                TO_CHAR(obs.timedate, 'MM') -1 as month_ ,
+                TO_CHAR(obs.timedate, 'DD')as day_ ,
+                TO_CHAR(obs.timedate, 'HH24')as hour_, obs.{2} , fc.{2}
+            from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
+            where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
     data = oracle_db.read_sql(sql)
     return data
 
-
 def get_ulsan(start, end, column):
-    data = ""
+    if '온도' in column:
+        column = 'temperature'
+    elif '습도' in column:
+        column = 'humidity'
+    elif '일조' in column:
+        column = 'sunshinehour'
+    else:
+        column = 'cloud'
+    sql = """
+        select 
+            TO_CHAR(obs.timedate, 'YYYY')as year_,
+            TO_CHAR(obs.timedate, 'MM') -1 as month_ , 
+            TO_CHAR(obs.timedate, 'DD')as day_ ,
+            TO_CHAR(obs.timedate, 'HH24')as hour_, obs.{2} , fc.{2}
+        from ulsan_obs obs join ulsan_fcst fc on obs.timedate = fc.timedate
+        where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
+    data = oracle_db.read_sql(sql)
     return data
+def get_dangjin_energy(start, end, column):
+    if '당진수상 태양광' in column:
+        column = 'dangjin_floating'
+    elif '당진자재창고태양광' in column:
+        column = 'dangjin_warehouse'
+    elif '당진태양광' in column:
+        column = 'dangjin'
+    sql = """
+        select
+            TO_CHAR(obs.timedate, 'YYYY')as year_,
+            TO_CHAR(obs.timedate, 'MM') -1 as month_ , 
+            TO_CHAR(obs.timedate, 'DD')as day_ ,
+            TO_CHAR(obs.timedate, 'HH24')as hour_, obs.{2} , fc.{2}
+        from energy_obs obs join energy_fcst fc on obs.timedate = fc.timedate
+        where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
 
+    energy_data = oracle_db.read_sql(sql)
+    return energy_data
+
+
+def get_ulsan_energy(start, end, column):
+    if '울산태양광' in column:
+        column = 'ulsan'
+    sql = """
+        select
+            TO_CHAR(obs.timedate, 'YYYY')as year_,
+            TO_CHAR(obs.timedate, 'MM') -1 as month_ , 
+            TO_CHAR(obs.timedate, 'DD')as day_ ,
+            TO_CHAR(obs.timedate, 'HH24')as hour_, obs.{2} , fc.{2}
+        from energy_obs obs join energy_fcst fc on obs.timedate = fc.timedate
+        where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
+
+    energy_data = oracle_db.read_sql(sql)
+    return energy_data
 
 if __name__ == "__main__":
     app.debug = True
