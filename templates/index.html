@@ -89,9 +89,9 @@
         </div>
 
         <!-- 임시 -->
-        <input type="button" id="execute" value="execute">
+        <input type="hidden" id="execute" value="execute">
         <script>
-            $('#execute').click(function(){
+            $('#execute-tab, #humidity-tab, #hr-tab, #cloud-tab, #execute').click(function(){
                 var time = $('#litepicker').val();
                 start = time.substr(0, 10)
                 end = time.substr(13, 10)

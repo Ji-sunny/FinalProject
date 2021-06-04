@@ -92,6 +92,7 @@ function getClickHandler(seq) {
             infoWindow.open(map, marker);
             console.log(marker);
             $("#check").text(marker.title);
+            $("#execute").trigger("click")
         }
     }
 }
