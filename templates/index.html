@@ -139,11 +139,10 @@
                         energy_chart.hiddenState.properties.opacity = 0;
                         // 범례
                         chart.legend = new am4charts.Legend();
-                        chart.legend.useDefaultMarker = true;
                         chart.legend.markers.template.disabled = true;
 
                         energy_chart.legend = new am4charts.Legend();
-                        energy_chart.legend.useDefaultMarker = true;
+                        energy_chart.legend.markers.template.disabled = true;
 
                         chart.data = chart_data;
                         energy_chart.data = energy_data;
@@ -167,7 +166,7 @@
                         series.defaultState.transitionDuration = 1000;
                         series.tensionX = 0.8;
                         series.name = "예측 날씨"
-                        series.legendSettings.labelText = "Series: [bold {color}]{name}[/]";
+                        series.legendSettings.labelText = "[bold {color}]{name}[/]";
 
                         var energy_series = energy_chart.series.push(new am4charts.LineSeries());
                         energy_series.dataFields.dateX = "date";
@@ -179,6 +178,7 @@
                         energy_series.defaultState.transitionDuration = 1000;
                         energy_series.tensionX = 0.8;
                         energy_series.name = "예측 태양광 발전량"
+                        energy_series.legendSettings.labelText = "[bold {color}]{name}[/]";
 
                         var series2 = chart.series.push(new am4charts.LineSeries());
                         series2.dataFields.dateX = "date";
@@ -188,7 +188,7 @@
                         series2.stroke = chart.colors.getIndex(6);
                         series2.tensionX = 0.8;
                         series2.name = "실제 날씨"
-                        series2.legendSettings.labelText = "Series: [bold {color}]{name}[/]";
+                        series2.legendSettings.labelText = "[bold {color}]{name}[/]";
 
                         var energy_series2 = energy_chart.series.push(new am4charts.LineSeries());
                         energy_series2.dataFields.dateX = "date";
@@ -197,7 +197,8 @@
                         energy_series2.defaultState.transitionDuration = 1500;
                         energy_series2.stroke = chart.colors.getIndex(6);
                         energy_series2.tensionX = 0.8;
-                        energy_series2.name = "태양광 발전량"
+                        energy_series2.name = "실제 태양광 발전량"
+                        energy_series2.legendSettings.labelText = "[bold {color}]{name}[/]";
 
                         chart.cursor = new am4charts.XYCursor();
                         chart.cursor.xAxis = dateAxis;
