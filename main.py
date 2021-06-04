@@ -80,12 +80,12 @@ def ajax():
     # print(data)
     chart_data = []
     # date: new Date(2018, 0, i), open: open, close: close
+
     for row in data.itertuples():
-        # print(row[1])
-        chart_data.append(f"{{date:new Date( {row[1]}, {row[2]}, {row[3]}, {row[4]}), open: {row[5]}, close: {row[6]} }}")
+        chart_data.append({"date":row[1].to_pydatetime(), "open":row[2], "close":row[3]})
+
     print("--" * 10)
-    print(','.join(chart_data))
-    return jsonify(data=','.join(chart_data) )
+    return jsonify(chart_data)
 
 def get_dangjin(start, end, column):
     if '온도' in column:
@@ -97,7 +97,7 @@ def get_dangjin(start, end, column):
     else:
         column = 'cloud'
     print(column)
-    sql = """select TO_CHAR(obs.timedate, 'YYYY')as year_,TO_CHAR(obs.timedate, 'MM') -1 as month_ , TO_CHAR(obs.timedate, 'DD')as day_ ,TO_CHAR(obs.timedate, 'HH24')as hour_, obs.{2} , fc.{2}
+    sql = """select obs.timedate, obs.{2} , fc.{2}
                 from dangjin_obs obs join dangjin_fcst fc on obs.timedate = fc.timedate
                 where obs.timedate between '{0}' AND '{1}'""".format(start, end, column)
     data = oracle_db.read_sql(sql)
@@ -111,4 +111,4 @@ def get_ulsan(start, end, column):
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(port=8080)
+    app.run(port=5000)
