@@ -22,6 +22,7 @@
     <script src="https://cdn.jsdelivr.net/npm/litepicker-polyfills-ie11/dist/index.js"></script>
     <!-- then include the Litepicker library --->
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+    <link rel="stylesheet" href="/static/css/litepicker.css">
 
     <!-- amchart xychart script -->
     <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
@@ -39,22 +40,22 @@
 </head>
 <body>
 
-<div class="container-fluid">
+<div class="container">
     <div class="header">
-        <h1>동서발전 태양광 발전 예측 시각화</h1>
+
     </div>
     <br>
     <div class="row">
         <ul class="col" style="list-style:none;">
             <li class="col-lg"><p>
                 <!-- single_daterangepicker -->
-                <input id="litepicker"></input>
+                <input id="litepicker" type="hidden"></input>
                 <script src="/static/js/litepicker.js"></script>
             </p></li>
 
             <!--지도 표시 구역-->
             <li><div id="map" style="width:100%;height:400px;"></div></li>
-            <li><div id="check">당진수상</div></li>
+            <li><div id="check" style="display:none;">당진수상</div></li>
 
         </ul>
         <div class="col-lg-8">

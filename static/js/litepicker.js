@@ -42,5 +42,8 @@ const picker = new Litepicker({
 
 
         })
+        picker.on('error:data', () => {
+            alert("선택불가능.")
+        })
     }
 });
