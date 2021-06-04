@@ -91,7 +91,7 @@
         <!-- 임시 -->
         <input type="hidden" id="execute" value="execute">
         <script>
-            $('#execute-tab, #humidity-tab, #hr-tab, #cloud-tab, #execute').click(function(){
+            $('#execute').click(function(){
                 var time = $('#litepicker').val();
                 start = time.substr(0, 10)
                 end = time.substr(13, 10)
@@ -210,6 +210,82 @@
                     }
                 })
             });
+
+            $('#execute-tab, #humidity-tab, #hr-tab, #cloud-tab').click(function(){
+                var time = $('#litepicker').val();
+                start = time.substr(0, 10)
+                end = time.substr(13, 10)
+                var location = $('#check')[0].innerHTML;
+                var column = document.getElementsByClassName("active")[0].innerText;
+                var postdata = {
+                    'start':start, 'end':end, 'time':time, 'location':location, 'column':column
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: '{{url_for("ajax")}}',
+                    data: JSON.stringify(postdata),
+                    dataType : 'JSON',
+                    contentType: "application/json",
+                    success: function(data){
+                        console.log(data)
+                        if (data.chart_data.length == 0)
+                            alert("날씨 데이터가 없습니다.");
+
+                        var result = [];
+
+                        var chart_data = data.chart_data
+                        for(var i in chart_data)
+                            chart_data[i]["date"] = new Date(chart_data[i]["date"])
+                        result.push(chart_data[i]);
+
+                        am4core.useTheme(am4themes_animated);
+                        // Themes end
+
+                        var chart = am4core.create("xychart_1", am4charts.XYChart);
+
+                        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+                        // 범례
+                        chart.legend = new am4charts.Legend();
+                        chart.legend.markers.template.disabled = true;
+
+                        chart.data = chart_data;
+
+                        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+
+                        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+                        valueAxis.tooltip.disabled = true;
+
+                        var series = chart.series.push(new am4charts.LineSeries());
+                        series.dataFields.dateX = "date";
+                        series.dataFields.openValueY = "open";
+                        series.dataFields.valueY = "close";
+                        series.tooltipText = "실제 날씨: {openValueY.value} 예측 날씨: {valueY.value}";
+                        series.sequencedInterpolation = true;
+                        series.fillOpacity = 0.3;
+                        series.defaultState.transitionDuration = 1000;
+                        series.tensionX = 0.8;
+                        series.name = "예측 날씨"
+                        series.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+                        var series2 = chart.series.push(new am4charts.LineSeries());
+                        series2.dataFields.dateX = "date";
+                        series2.dataFields.valueY = "open";
+                        series2.sequencedInterpolation = true;
+                        series2.defaultState.transitionDuration = 1500;
+                        series2.stroke = chart.colors.getIndex(6);
+                        series2.tensionX = 0.8;
+                        series2.name = "실제 날씨"
+                        series2.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+                        chart.cursor = new am4charts.XYCursor();
+                        chart.cursor.xAxis = dateAxis;
+                        chart.scrollbarX = new am4core.Scrollbar();
+                    }
+                })
+            });
+
+
 
         </script>
     </div>
