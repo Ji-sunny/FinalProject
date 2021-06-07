@@ -33,7 +33,6 @@ def ajax():
     barchart_data = []
     chart_data = []
     energy_chart_data = []
-
     # date: new Date(2018, 0, i), open: open, close: close
     # print(data)
     for row in data.itertuples():
@@ -44,8 +43,12 @@ def ajax():
         barchart_data.append({"date":row[1], "steps":row[2]})
 
     # print("--" * 10)
-    return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data, "barchart_data":barchart_data})
+    return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data})
+
+@app.route("/select")
+def selectmain():
+    return render_template('view/select.html')
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host='0.0.0.0', port=5000)
+    app.run(port=5000)
