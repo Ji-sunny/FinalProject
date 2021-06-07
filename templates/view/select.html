@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>선택</title>
     <style>
-        * {margin: 0px;padding: 0px;}
+        * {margin: 0px;padding: 0px;font-family: 'Noto Sans KR', sans-serif;}
         #industry{
             background-image: url(/static/img/img01.jpg);
             background-size: cover;
@@ -25,29 +25,41 @@
         li a {color: #fff; text-decoration: none; outline: none; font-size:50px; }
         #household a .txt {
             position: absolute;
-			left: 25%; top:40%;
+			left: 25%; top:50%;
 			margin-left: -50px;
 			margin-top: -50px;
 			text-align: center;
             z-index:1000;}
         #industry a .txt {
             position: absolute;
-			left: 75%; top:40%;
+			left: 75%; top:50%;
 			margin-left: -50px;
 			margin-top: -50px;
 			text-align: center;
             z-index:1000;}
-        #opac:hover, #opac2:hover{background-color:rgba(0, 0, 0, 0.2);}
+        #opac:hover, #opac2:hover{background-color:rgba(0, 0, 0, 0.1);}
+        .full-screen {padding-top: 100px}
+        #header {
+            border-bottom: 1px solid #e8e8e8;
+            position: fixed;
+            width: 100%;
+            height: 100px;
+            text-align: left;
+            background-color: white;
+        }
     </style>
 </head>
 <body>
+    <div id="header">
+        <img src="/static/img/logo.png" style="height: 90px">
+    </div>
     <div class="full-screen">
         <ul>
             <li id="household">
                 <a href=""><p class="txt"><b>가정용</b></p><p id="opac"></p></a>
             </li>
             <li id="industry">
-                <a href="/"><p class="txt"><b>산업용</b></p><p id="opac2"></p></a>
+                <a href="/index"><p class="txt"><b>산업용</b></p><p id="opac2"></p></a>
             </li>
         </ul>
     </div>

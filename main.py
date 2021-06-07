@@ -9,6 +9,10 @@ app = Flask(__name__)
 cors = CORS(app)
 
 @app.route("/")
+def selectmain():
+    return render_template("view/select.html")
+
+@app.route("/index")
 def index():
     return render_template("index.html")
 
@@ -44,10 +48,6 @@ def ajax():
 
     # print("--" * 10)
     return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data, "barchart_data":barchart_data})
-
-@app.route("/select")
-def selectmain():
-    return render_template('view/select.html')
 
 if __name__ == "__main__":
     app.debug = True
