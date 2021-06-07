@@ -11,7 +11,7 @@ const picker = new Litepicker({
     // showTooltip: true,
     // autoRefresh: true,
     setup: (picker) => {
-        picker.on('button:apply', (date1, date2) => {
+        picker.on('selected', (date1, date2) => {
             date_1 = date1.dateInstance.toString().substr(4,21)
             date_2 = date2.dateInstance.toString().substr(4,21)
             var d1s = date_1.split(' ')
@@ -40,6 +40,8 @@ const picker = new Litepicker({
             start_date = d1s[2] + '-' + d1s_m + '-' + d1s[1] + " 00:00:00"
             end_date = d2s[2] + '-' + d2s_m + '-' + d2s[1] + " 23:00:00"
 
+
+            $("#execute").trigger("click")
 
         })
         picker.on('error:data', () => {

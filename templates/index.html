@@ -37,6 +37,13 @@
     <!-- 탭 누르면 데이터 콜 -->
     <script src="/static/js/tabs.js"></script>
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+
+
+    <!-- 다혜는 테스트 중-->
+    <link href="../static/css/select2.css" rel="stylesheet"/>
+    <script src="../static/js/select2.js"></script>
+    <!-- 다혜는 테스트 중-->
+
 </head>
 <body>
 
@@ -45,6 +52,7 @@
 
     </div>
     <br><br>
+
     <div class="row">
         <ul class="col" style="list-style:none;">
             <div style="height:300px;">
@@ -55,6 +63,15 @@
                 </p></li>
             </div>
             <!--지도 표시 구역-->
+             <li>
+                <select id="ee">
+                    <option value="">당진 수상 태양광</option>
+                    <option value="">당진 자재창고 태양광</option>
+                    <option value="">당진 태양광</option>
+                    <option value="">울산 태양광</option>
+                </select>
+            </li>
+
             <li><div id="map" style="width:100%;height:400px;"></div></li>
             <li><div id="check" style="display:none;">당진수상</div></li>
 
@@ -63,7 +80,6 @@
             <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link active" data-toggle="tab" id="temperature-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">온도</a>
-
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" data-toggle="tab" id="humidity-tab" data-bs-target="#humidity" type="button" role="tab" aria-controls="pills-humidity" aria-selected="false">습도</a>
@@ -80,8 +96,18 @@
                     <li id="temperature" role="tabpanel" aria-labelledby="pills-temperature-tab">
                         <div class="chart" id="xychart_1" style="height: 350px;"></div>
                     </li>
-                    <li id="humidity" role="tabpanel" aria-labelledby="pills-humidity-tab">
-                        <h3>태양광</h3>
+                </ul>
+            </div>
+
+            <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" data-toggle="tab" id="energy-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">태양광 에너지</a>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <ul class="tab-pane fade show active" style="list-style:none;">
+                    <li id="energy" role="tabpanel" aria-labelledby="pills-energy-tab">
                         <div class="chart" id="xychart_2" style="height: 350px;"></div>
                     </li>
                 </ul>
@@ -91,205 +117,208 @@
         <!-- 임시 -->
         <input type="hidden" id="execute" value="execute">
         <script>
-            $('#execute').click(function(){
-                var time = $('#litepicker').val();
-                start = time.substr(0, 10)
-                end = time.substr(13, 10)
-                var location = $('#check')[0].innerHTML;
-                var column = document.getElementsByClassName("active")[0].innerText;
-                var postdata = {
-                    'start':start, 'end':end, 'time':time, 'location':location, 'column':column
-                }
-                $.ajax({
-                    type: 'POST',
-                    url: '{{url_for("ajax")}}',
-                    data: JSON.stringify(postdata),
-                    dataType : 'JSON',
-                    contentType: "application/json",
-                    success: function(data){
-                        console.log(data)
-                        if (data.chart_data.length == 0)
-                            alert("날씨 데이터가 없습니다.");
-                        console.log("success")
-                        console.log("start:", start)
-                        console.log("end:", end)
-                        console.log("location:", location)
-                        console.log("column:", column)
 
-                        var result = [];
-                        var energy_result = [];
 
-                        var chart_data = data.chart_data
-                        var energy_data = data.energy_chart_data
-
-                        for(var i in chart_data)
-                            chart_data[i]["date"] = new Date(chart_data[i]["date"])
-                        result.push(chart_data[i]);
-                        for(var i in energy_data)
-                            energy_data[i]["date"] = new Date(energy_data[i]["date"])
-                        energy_result.push(energy_data[i]);
-
-                        am4core.useTheme(am4themes_animated);
-                        // Themes end
-
-                        var chart = am4core.create("xychart_1", am4charts.XYChart);
-                        var energy_chart = am4core.create("xychart_2", am4charts.XYChart);
-
-                        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-                        energy_chart.hiddenState.properties.opacity = 0;
-                        // 범례
-                        chart.legend = new am4charts.Legend();
-                        chart.legend.markers.template.disabled = true;
-
-                        energy_chart.legend = new am4charts.Legend();
-                        energy_chart.legend.markers.template.disabled = true;
-
-                        chart.data = chart_data;
-                        energy_chart.data = energy_data;
-
-                        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-                        var energy_dateAxis = energy_chart.xAxes.push(new am4charts.DateAxis());
-
-                        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-                        var energy_valueAxis = energy_chart.yAxes.push(new am4charts.ValueAxis());
-
-                        valueAxis.tooltip.disabled = true;
-                        energy_valueAxis.tooltip.disabled = true;
-
-                        var series = chart.series.push(new am4charts.LineSeries());
-                        series.dataFields.dateX = "date";
-                        series.dataFields.openValueY = "open";
-                        series.dataFields.valueY = "close";
-                        series.tooltipText = "실제 날씨: {openValueY.value} 예측 날씨: {valueY.value}";
-                        series.sequencedInterpolation = true;
-                        series.fillOpacity = 0.3;
-                        series.defaultState.transitionDuration = 1000;
-                        series.tensionX = 0.8;
-                        series.name = "예측 날씨"
-                        series.legendSettings.labelText = "[bold {color}]{name}[/]";
-
-                        var energy_series = energy_chart.series.push(new am4charts.LineSeries());
-                        energy_series.dataFields.dateX = "date";
-                        energy_series.dataFields.openValueY = "open";
-                        energy_series.dataFields.valueY = "close";
-                        energy_series.tooltipText = "태양광 발전량: {openValueY.value} 예측 태양광 발전량: {valueY.value}";
-                        energy_series.sequencedInterpolation = true;
-                        energy_series.fillOpacity = 0.3;
-                        energy_series.defaultState.transitionDuration = 1000;
-                        energy_series.tensionX = 0.8;
-                        energy_series.name = "예측 태양광 발전량"
-                        energy_series.legendSettings.labelText = "[bold {color}]{name}[/]";
-
-                        var series2 = chart.series.push(new am4charts.LineSeries());
-                        series2.dataFields.dateX = "date";
-                        series2.dataFields.valueY = "open";
-                        series2.sequencedInterpolation = true;
-                        series2.defaultState.transitionDuration = 1500;
-                        series2.stroke = chart.colors.getIndex(6);
-                        series2.tensionX = 0.8;
-                        series2.name = "실제 날씨"
-                        series2.legendSettings.labelText = "[bold {color}]{name}[/]";
-
-                        var energy_series2 = energy_chart.series.push(new am4charts.LineSeries());
-                        energy_series2.dataFields.dateX = "date";
-                        energy_series2.dataFields.valueY = "open";
-                        energy_series2.sequencedInterpolation = true;
-                        energy_series2.defaultState.transitionDuration = 1500;
-                        energy_series2.stroke = chart.colors.getIndex(6);
-                        energy_series2.tensionX = 0.8;
-                        energy_series2.name = "실제 태양광 발전량"
-                        energy_series2.legendSettings.labelText = "[bold {color}]{name}[/]";
-
-                        chart.cursor = new am4charts.XYCursor();
-                        chart.cursor.xAxis = dateAxis;
-                        chart.scrollbarX = new am4core.Scrollbar();
-
-                        energy_chart.cursor = new am4charts.XYCursor();
-                        energy_chart.cursor.xAxis = energy_dateAxis;
-                        energy_chart.scrollbarX = new am4core.Scrollbar();
-                    }
-                })
-            });
-
-            $('#execute-tab, #humidity-tab, #hr-tab, #cloud-tab').click(function(){
-                var time = $('#litepicker').val();
-                start = time.substr(0, 10)
-                end = time.substr(13, 10)
-                var location = $('#check')[0].innerHTML;
-                var column = document.getElementsByClassName("active")[0].innerText;
-                var postdata = {
-                    'start':start, 'end':end, 'time':time, 'location':location, 'column':column
-                }
-                $.ajax({
-                    type: 'POST',
-                    url: '{{url_for("ajax")}}',
-                    data: JSON.stringify(postdata),
-                    dataType : 'JSON',
-                    contentType: "application/json",
-                    success: function(data){
-                        console.log(data)
-                        if (data.chart_data.length == 0)
-                            alert("날씨 데이터가 없습니다.");
-
-                        var result = [];
-
-                        var chart_data = data.chart_data
-                        for(var i in chart_data)
-                            chart_data[i]["date"] = new Date(chart_data[i]["date"])
-                        result.push(chart_data[i]);
-
-                        am4core.useTheme(am4themes_animated);
-                        // Themes end
-
-                        var chart = am4core.create("xychart_1", am4charts.XYChart);
-
-                        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-                        // 범례
-                        chart.legend = new am4charts.Legend();
-                        chart.legend.markers.template.disabled = true;
-
-                        chart.data = chart_data;
-
-                        var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-
-                        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-
-                        valueAxis.tooltip.disabled = true;
-
-                        var series = chart.series.push(new am4charts.LineSeries());
-                        series.dataFields.dateX = "date";
-                        series.dataFields.openValueY = "open";
-                        series.dataFields.valueY = "close";
-                        series.tooltipText = "실제 날씨: {openValueY.value} 예측 날씨: {valueY.value}";
-                        series.sequencedInterpolation = true;
-                        series.fillOpacity = 0.3;
-                        series.defaultState.transitionDuration = 1000;
-                        series.tensionX = 0.8;
-                        series.name = "예측 날씨"
-                        series.legendSettings.labelText = "[bold {color}]{name}[/]";
-
-                        var series2 = chart.series.push(new am4charts.LineSeries());
-                        series2.dataFields.dateX = "date";
-                        series2.dataFields.valueY = "open";
-                        series2.sequencedInterpolation = true;
-                        series2.defaultState.transitionDuration = 1500;
-                        series2.stroke = chart.colors.getIndex(6);
-                        series2.tensionX = 0.8;
-                        series2.name = "실제 날씨"
-                        series2.legendSettings.labelText = "[bold {color}]{name}[/]";
-
-                        chart.cursor = new am4charts.XYCursor();
-                        chart.cursor.xAxis = dateAxis;
-                        chart.scrollbarX = new am4core.Scrollbar();
-                    }
-                })
-            });
-
+        $(document).ready(function () {
+            $("#ee").select2();
+        });
 
 
         </script>
     </div>
 </div>
 <script src="/static/js/map.js"></script>
+
+    <script>
+        // 변경시
+$('#execute, #apply').click(function(){
+    var time = $('#litepicker').val();
+    start = time.substr(0, 10)
+    end = time.substr(13, 10)
+    var location = $('#check')[0].innerHTML;
+    var column = document.getElementsByClassName("active")[0].innerText;
+    var postdata = {
+        'start':start, 'end':end, 'time':time, 'location':location, 'column':column
+    }
+    $.ajax({
+        type: 'POST',
+        url: '{{url_for("ajax")}}',
+        data: JSON.stringify(postdata),
+        dataType : 'JSON',
+        contentType: "application/json",
+        success: function(data){
+            if (data.chart_data.length == 0)
+                alert("날씨 데이터가 없습니다.");
+            var result = [];
+            var energy_result = [];
+
+            var chart_data = data.chart_data
+            var energy_data = data.energy_chart_data
+
+            for(var i in chart_data)
+                chart_data[i]["date"] = new Date(chart_data[i]["date"])
+            result.push(chart_data[i]);
+            for(var i in energy_data)
+                energy_data[i]["date"] = new Date(energy_data[i]["date"])
+            energy_result.push(energy_data[i]);
+
+            am4core.useTheme(am4themes_animated);
+            // Themes end
+
+            var chart = am4core.create("xychart_1", am4charts.XYChart);
+            var energy_chart = am4core.create("xychart_2", am4charts.XYChart);
+
+            chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+            energy_chart.hiddenState.properties.opacity = 0;
+            // 범례
+            chart.legend = new am4charts.Legend();
+            chart.legend.markers.template.disabled = true;
+
+            energy_chart.legend = new am4charts.Legend();
+            energy_chart.legend.markers.template.disabled = true;
+
+            chart.data = chart_data;
+            energy_chart.data = energy_data;
+
+            var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+            var energy_dateAxis = energy_chart.xAxes.push(new am4charts.DateAxis());
+
+            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+            var energy_valueAxis = energy_chart.yAxes.push(new am4charts.ValueAxis());
+
+            valueAxis.tooltip.disabled = true;
+            energy_valueAxis.tooltip.disabled = true;
+
+            var series = chart.series.push(new am4charts.LineSeries());
+            series.dataFields.dateX = "date";
+            series.dataFields.openValueY = "open";
+            series.dataFields.valueY = "close";
+            series.tooltipText = "실제 날씨: {openValueY.value} 예측 날씨: {valueY.value}";
+            series.sequencedInterpolation = true;
+            series.fillOpacity = 0.3;
+            series.defaultState.transitionDuration = 1000;
+            series.tensionX = 0.8;
+            series.name = "예측 날씨"
+            series.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+            var energy_series = energy_chart.series.push(new am4charts.LineSeries());
+            energy_series.dataFields.dateX = "date";
+            energy_series.dataFields.openValueY = "open";
+            energy_series.dataFields.valueY = "close";
+            energy_series.tooltipText = "태양광 발전량: {openValueY.value} 예측 태양광 발전량: {valueY.value}";
+            energy_series.sequencedInterpolation = true;
+            energy_series.fillOpacity = 0.3;
+            energy_series.defaultState.transitionDuration = 1000;
+            energy_series.tensionX = 0.8;
+            energy_series.name = "예측 태양광 발전량"
+            energy_series.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+            var series2 = chart.series.push(new am4charts.LineSeries());
+            series2.dataFields.dateX = "date";
+            series2.dataFields.valueY = "open";
+            series2.sequencedInterpolation = true;
+            series2.defaultState.transitionDuration = 1500;
+            series2.stroke = chart.colors.getIndex(6);
+            series2.tensionX = 0.8;
+            series2.name = "실제 날씨"
+            series2.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+            var energy_series2 = energy_chart.series.push(new am4charts.LineSeries());
+            energy_series2.dataFields.dateX = "date";
+            energy_series2.dataFields.valueY = "open";
+            energy_series2.sequencedInterpolation = true;
+            energy_series2.defaultState.transitionDuration = 1500;
+            energy_series2.stroke = chart.colors.getIndex(6);
+            energy_series2.tensionX = 0.8;
+            energy_series2.name = "실제 태양광 발전량"
+            energy_series2.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+            chart.cursor = new am4charts.XYCursor();
+            chart.cursor.xAxis = dateAxis;
+            chart.scrollbarX = new am4core.Scrollbar();
+
+            energy_chart.cursor = new am4charts.XYCursor();
+            energy_chart.cursor.xAxis = energy_dateAxis;
+            energy_chart.scrollbarX = new am4core.Scrollbar();
+        }
+    })
+});
+
+$('#temperature-tab, #humidity-tab, #hr-tab, #cloud-tab').click(function(){
+    var time = $('#litepicker').val();
+    start = time.substr(0, 10)
+    end = time.substr(13, 10)
+    var location = $('#check')[0].innerHTML;
+    var column = document.getElementsByClassName("active")[0].innerText;
+    var postdata = {
+        'start':start, 'end':end, 'time':time, 'location':location, 'column':column
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: '{{url_for("ajax")}}',
+        data: JSON.stringify(postdata),
+        dataType : 'JSON',
+        contentType: "application/json",
+        success: function(data){
+            if (data.chart_data.length == 0)
+                alert("날씨 데이터가 없습니다.");
+
+            var result = [];
+
+            var chart_data = data.chart_data
+            for(var i in chart_data)
+                chart_data[i]["date"] = new Date(chart_data[i]["date"])
+            result.push(chart_data[i]);
+
+            am4core.useTheme(am4themes_animated);
+            // Themes end
+
+            var chart = am4core.create("xychart_1", am4charts.XYChart);
+
+            chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+            // 범례
+            chart.legend = new am4charts.Legend();
+            chart.legend.markers.template.disabled = true;
+
+            chart.data = chart_data;
+
+            var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+
+            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+            valueAxis.tooltip.disabled = true;
+
+            var series = chart.series.push(new am4charts.LineSeries());
+            series.dataFields.dateX = "date";
+            series.dataFields.openValueY = "open";
+            series.dataFields.valueY = "close";
+            series.tooltipText = "실제 날씨: {openValueY.value} 예측 날씨: {valueY.value}";
+            series.sequencedInterpolation = true;
+            series.fillOpacity = 0.3;
+            series.defaultState.transitionDuration = 1000;
+            series.tensionX = 0.8;
+            series.name = "예측 날씨"
+            series.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+            var series2 = chart.series.push(new am4charts.LineSeries());
+            series2.dataFields.dateX = "date";
+            series2.dataFields.valueY = "open";
+            series2.sequencedInterpolation = true;
+            series2.defaultState.transitionDuration = 1500;
+            series2.stroke = chart.colors.getIndex(6);
+            series2.tensionX = 0.8;
+            series2.name = "실제 날씨"
+            series2.legendSettings.labelText = "[bold {color}]{name}[/]";
+
+            chart.cursor = new am4charts.XYCursor();
+            chart.cursor.xAxis = dateAxis;
+            chart.scrollbarX = new am4core.Scrollbar();
+        }
+    })
+});
+
+
+    </script>
 </body>
 </html>

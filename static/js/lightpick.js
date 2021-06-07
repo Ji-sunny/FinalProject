@@ -468,7 +468,7 @@
             if (opts.footer === true) {
                 html += '<button type="button" class="lightpick__reset-action">' + opts.locale.buttons.reset + '</button>';
                 html += '<div class="lightpick__footer-message"></div>';
-                html += '<button type="button" class="lightpick__apply-action">' + opts.locale.buttons.apply + '</button>';
+                html += '<button type="button" class="lightpick__apply-action" id="apply">' + opts.locale.buttons.apply + '</button>';
             }
             else {
                 html += opts.footer;
