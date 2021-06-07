@@ -42,6 +42,67 @@ class Database():
         # data 열이름 소문자처리
         data.columns = data.columns.str.lower()
         return data
+
+    def get_dangjin(self, start, end, column, change=0):
+        if '온도' in column:
+            column = 'temperature'
+        elif '습도' in column:
+            column = 'humidity'
+        elif '일조' in column:
+            column = 'sunshinehour'
+        else:
+            column = 'cloud'
+            change = 1
+        # print(column)
+        sql = """select fc.timedate, NVL(obs.{2}, {3}) , fc.{2}
+                    from dangjin_obs obs right outer join dangjin_fcst fc on obs.timedate = fc.timedate
+                    where fc.timedate between '{0}' AND '{1}'
+                    order by fc.timedate""".format(start, end, column, change)
+        data = pd.read_sql(sql, conn)
+        return data
+
+
+    def get_ulsan(self, start, end, column, change=0):
+        if '온도' in column:
+            column = 'temperature'
+        elif '습도' in column:
+            column = 'humidity'
+        elif '일조' in column:
+            column = 'sunshinehour'
+        else:
+            column = 'cloud'
+            change = 1
+        sql = """select fc.timedate, NVL(obs.{2}, {3}) , fc.{2}
+                        from ulsan_obs obs right outer join ulsan_fcst fc on obs.timedate = fc.timedate
+                        where fc.timedate between '{0}' AND '{1}'
+                        order by fc.timedate""".format(start, end, column, change)
+        data = pd.read_sql(sql, conn)
+        return data
+    def get_dangjin_energy(self, start, end, location):
+        if '당진수상 태양광' in location:
+            location = 'dangjin_floating'
+        elif '당진자재창고태양광' in location:
+            location = 'dangjin_warehouse'
+        elif '당진태양광' in location:
+            location = 'dangjin'
+        sql = """select fc.timedate, NVL(obs.{2}, 0) , fc.{2}
+                        from energy_obs obs right outer join energy_fcst fc on obs.timedate = fc.timedate
+                        where fc.timedate between '{0}' AND '{1}'
+                        order by fc.timedate""".format(start, end, location)
+        data = pd.read_sql(sql, conn)
+        return data
+
+
+    def get_ulsan_energy(self, start, end, location):
+        if '울산태양광' in location:
+            location = 'ulsan'
+        sql = """select fc.timedate, NVL(obs.{2},0) , fc.{2}
+                        from energy_obs obs right outer  join energy_fcst fc on obs.timedate = fc.timedate
+                        where fc.timedate between '{0}' AND '{1}'
+                        order by fc.timedate""".format(start, end, location)
+
+        data = pd.read_sql(sql, conn)
+        return data
 # ===============================weather===============================
 
 class Weather:

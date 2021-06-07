@@ -248,7 +248,6 @@
             // 변경시
     $('#execute, #apply').click(function(){
         var time = $('#litepicker').val();
-        console.log("time:" +time)
         start = time.substr(0, 10)
         end = time.substr(13, 10)
         var location = $('#check')[0].innerHTML;
@@ -281,7 +280,6 @@
         var postdata = {
             'start':start, 'end':end, 'time':time, 'location':location, 'column':column
         }
-        console.log(postdata)
         $.ajax({
             type: 'POST',
             url: '{{url_for("ajax")}}',
