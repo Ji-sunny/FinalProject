@@ -68,130 +68,92 @@
             text-align: center;
         }
 
-        .left_title_big {
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .left_title {
-            color: #b9b9b9;
-        }
-
-        #right_size {
-            margin-left: 10%;
-            width: 80%;
-        }
-
 
     </style>
 </head>
 <body>
 
-    <div id="header">
-        <img>
-    </div>
-    <br/><br/>
-    <div id="all" style="height: 100%; width: 100%; display: flex;">
-        <div id="left" style="height: 100%; width: 20%; border: 1px solid black; display: inline-block; background-color: #38393E; position: fixed;">
-            <div style="width: 350px; margin-left: 30px;">
-                <ul class="col" style="list-style:none;"><br/>
-                    <div class="left_title_big">계산 조건</div><br/>
-                    <div class="left_title">날짜</div><br/>
+<div id="header">
+ 이건 헤더야
+</div>
+
+<div style="text-align: center">
+    <br><br><br>
+        <!-- 좌측 조건 -->
+        <div style="border:1px solid black; width:350px; height:500px; display: inline-block">
+            <ul class="col" style="list-style:none;">
+                <li class="col-lg"><p>
                     <!-- single_daterangepicker -->
-                    <div>
-                        <input style="width:500px;" id="litepicker" type="hidden"/>
-                    </div><br/><br/><br/>
-                    <!--지도 표시 구역-->
-                    <div class="left_title">위치 선택</div><br/>
-                     <li>
-                        <select id="search" style="width: 280px;">
-                            <option value="당진수상태양광" selected="true">당진 수상 태양광</option>
-                            <option value="당진자재창고태양광" selected="False">당진 자재창고 태양광</option>
-                            <option value="당진태양광" selected="False">당진 태양광</option>
-                            <option value="울산태양광" selected="False">울산 태양광</option>
-                        </select>
+                    <input style="width:500px;" id="litepicker" type="hidden"/>
+                </p></li>
+                <!--지도 표시 구역-->
+                 <li>
+                    <select id="search" style="width: 300px;">
+                        <option value="당진수상태양광" selected="true">당진 수상 태양광</option>
+                        <option value="당진자재창고태양광" selected="False">당진 자재창고 태양광</option>
+                        <option value="당진태양광" selected="False">당진 태양광</option>
+                        <option value="울산태양광" selected="False">울산 태양광</option>
+                    </select>
+                </li>
+                <li><div style="height:20px;"></div></li>
+                <li><div id="map" style="width:300px;height:400px;"></div></li>
+                <li><div id="check" style="display:none;">당진수상</div></li>
+            </ul>
+        </div>
+        <div style="border:1px solid black; width:20%; height:800px; display: inline-block"></div>
+        <!-- 우측 결과 -->
+        <div class="col-lg-8" style="width:40%; height:800px; border:1px solid black; display: inline-block">
+            <ul class="nav nav-tabs" style="list-style:none; width:60%" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" data-toggle="tab" id="temperature-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">온도</a>
+
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" id="humidity-tab" data-bs-target="#humidity" type="button" role="tab" aria-controls="pills-humidity" aria-selected="false">습도</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" id="hr-tab" data-bs-target="#hr" type="button" role="tab" aria-controls="pills-hr" aria-selected="false">일조</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-toggle="tab" id="cloud-tab" data-bs-target="#cloud" type="button" role="tab" aria-controls="pills-cloud" aria-selected="false">전운량</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <ul class="tab-pane fade show active" style="list-style:none;">
+                    <li id="temperature" role="tabpanel" aria-labelledby="pills-temperature-tab">
+                        <div class="chart" id="xychart_1" style="height: 350px;"></div>
                     </li>
-                    <li><div style="height:20px;"></div></li>
-                    <li><div id="map" style="width:280px;height:300px;"></div></li>
-                    <li><div id="check" style="display:none;">당진수상</div></li>
                 </ul>
-                <br/><br/>
+            </div>
+
+            <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" data-toggle="tab" id="energy-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">태양광 에너지</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link disabled" data-toggle="tab" id="energy_name" type= role="tab" aria-controls="pills-temperature" aria-selected="true">당진 수상</a>
+                </li>
+
+            </ul>
+            <div class="tab-content">
+                <ul class="tab-pane fade show active" style="list-style:none;">
+                    <li id="energy" role="tabpanel" aria-labelledby="pills-energy-tab">
+                        <div class="chart" id="xychart_2" style="height: 350px;"></div>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div style="height: 100%; width: 20%; display: inline-block"></div>
-        <div id="right" style="height: 100%; width: 80%; display: inline-block">
-            <div id="right_size"><br/><br/>
-
-                <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link active" data-toggle="tab" id="energy-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">태양광 에너지</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link disabled" data-toggle="tab" id="energy_name" type= role="tab" aria-controls="pills-temperature" aria-selected="true">당진 수상</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <ul class="tab-pane fade show active" style="list-style:none;">
-                        <li id="energy" role="tabpanel" aria-labelledby="pills-energy-tab">
-                            <div class="chart" id="barchart" style="height: 350px;"></div>
-                        </li>
-                    </ul>
-                </div>
-                <br/><br/><br/>
-
-
-                <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link active" data-toggle="tab" id="energy-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">태양광 에너지</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link disabled" data-toggle="tab" id="energy_name" type= role="tab" aria-controls="pills-temperature" aria-selected="true">당진 수상</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <ul class="tab-pane fade show active" style="list-style:none;">
-                        <li id="energy" role="tabpanel" aria-labelledby="pills-energy-tab">
-                            <div class="chart" id="xychart_2" style="height: 350px;"></div>
-                        </li>
-                    </ul>
-                </div>
-                <br/><br/><br/>
-
-                <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link active" data-toggle="tab" id="temperature-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">온도</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" data-toggle="tab" id="humidity-tab" data-bs-target="#humidity" type="button" role="tab" aria-controls="pills-humidity" aria-selected="false">습도</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" data-toggle="tab" id="hr-tab" data-bs-target="#hr" type="button" role="tab" aria-controls="pills-hr" aria-selected="false">일조</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link" data-toggle="tab" id="cloud-tab" data-bs-target="#cloud" type="button" role="tab" aria-controls="pills-cloud" aria-selected="false">전운량</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <ul class="tab-pane fade show active" style="list-style:none;">
-                        <li id="temperature" role="tabpanel" aria-labelledby="pills-temperature-tab">
-                            <div class="chart" id="xychart_1" style="height: 350px;"></div>
-                        </li>
-                    </ul>
-                </div>
-                <br/>
-
-            </div>
-        </div>
-
-    </div>
 
         <!-- 임시 -->
         <input type="hidden" id="execute" value="execute">
 </div>
 
 
-<script src="/static/js/map.js"></script>
+<div id="footer">
+ 이건 풋터
+</div>
+
+<script src="/static/js/map.js"></script>s
 
 <script>
     $(document).ready(function() {
@@ -425,6 +387,5 @@
 </script>
 
 <script src="/static/js/litepicker.js"></script>
-<script src="/static/js/barchart.js"></script>
 </body>
 </html>
