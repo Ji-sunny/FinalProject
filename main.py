@@ -50,12 +50,12 @@ def ajax():
     chart_data = []
     energy_chart_data = []
     # date: new Date(2018, 0, i), open: open, close: close
-    print(data)
+    # print(data)
     for row in data.itertuples():
         chart_data.append({"date":row[1].to_pydatetime(), "open":row[2], "close":row[3]})
     for row in energy_data.itertuples():
         energy_chart_data.append({"date":row[1].to_pydatetime(), "open":row[2], "close":row[3]})
-    print("--" * 10)
+    # print("--" * 10)
     return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data})
 
 def get_dangjin(start, end, column, change=0):
@@ -68,7 +68,7 @@ def get_dangjin(start, end, column, change=0):
     else:
         column = 'cloud'
         change = 1
-    print(column)
+    # print(column)
     sql = """select fc.timedate, NVL(obs.{2}, {3}) , fc.{2}
                 from dangjin_obs obs right outer join dangjin_fcst fc on obs.timedate = fc.timedate
                 where fc.timedate between '{0}' AND '{1}'

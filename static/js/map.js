@@ -9,7 +9,7 @@ var MARKER_SPRITE_POSITION = {
 
 var map = new naver.maps.Map('map', {
     center: new naver.maps.LatLng(37.05317223592023, 126.51053057117839),
-    zoom: 14
+    zoom: 5
 });
 
 var bounds = map.getBounds(),
