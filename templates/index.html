@@ -63,11 +63,11 @@
             </div>
             <!--지도 표시 구역-->
              <li>
-                <select id="ee">
-                    <option value="">당진 수상 태양광</option>
-                    <option value="">당진 자재창고 태양광</option>
-                    <option value="">당진 태양광</option>
-                    <option value="">울산 태양광</option>
+                <select id="search">
+                    <option value="당진수상태양광" selected="true">당진 수상 태양광</option>
+                    <option value="당진자재창고태양광" selected="False">당진 자재창고 태양광</option>
+                    <option value="당진태양광" selected="False">당진 태양광</option>
+                    <option value="울산태양광" selected="False">울산 태양광</option>
                 </select>
             </li>
 
@@ -430,6 +430,17 @@
             })
         });
 
+$(document).ready(function() {
+    $("#search").select2();
+});
+
+
+$("#search").change(function(){
+    var loc = $(this).val();
+    console.log(loc)
+    $("#check").text(loc)
+    $("#execute").trigger("click")
+});
 
     </script>
 </body>
