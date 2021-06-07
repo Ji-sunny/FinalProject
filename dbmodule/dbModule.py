@@ -103,6 +103,26 @@ class Database():
 
         data = pd.read_sql(sql, conn)
         return data
+
+    def get_energy_sum(self, start, end, location):
+        if '당진수상 태양광' in location:
+            location = 'dangjin_floating'
+        elif '당진자재창고태양광' in location:
+            location = 'dangjin_warehouse'
+        elif '당진태양광' in location:
+            location = 'dangjin'
+        else:
+            location =  'ulsan'
+        sql = """
+            select TO_char(timedate, 'YYYY-MM-DD') tt, sum({2})
+            from energy_obs 
+            where timedate between '{0}' and '{1}'
+            GROUP by TO_char(timedate, 'YYYY-MM-DD')
+            order by tt
+        """.format(start, end, location)
+        data = pd.read_sql(sql, conn)
+        return data
+
 # ===============================weather===============================
 
 class Weather:

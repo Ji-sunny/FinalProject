@@ -1,4 +1,3 @@
-
 am4core.ready(function() {
 
 // Themes begin
@@ -12,124 +11,7 @@ am4core.useTheme(am4themes_animated);
 var chart = am4core.create("barchart", am4charts.XYChart);
 chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
-var time = $('#litepicker').val();
-start = time.substr(0, 10)
-end = time.substr(13, 10)
-var location = $('#check')[0].innerHTML;
-$("#energy_name").text(location);
-var column = document.getElementsByClassName("active")[0].innerText;
-var postdata = {
-    'start':start, 'end':end, 'time':time, 'location':location, 'column':column
-}
-$.ajax({
-    type: 'POST',
-    url: '{{url_for("ajax")}}',
-    data: JSON.stringify(postdata),
-    dataType : 'JSON',
-    contentType: "application/json",
-    success: function(data){
-        if (data.chart_data.length == 0)
-            alert("날씨 데이터가 없습니다.");
-        twoChart(data)
-    }
-})
-
 data =
-
-chart.data = [{
-    "date": "2018-01-01",
-    "steps": 4561
-}, {
-    "date": "2018-01-02",
-    "steps": 5687
-}, {
-    "date": "2018-01-03",
-    "steps": 6348
-}, {
-    "date": "2018-01-04",
-    "steps": 4878
-}, {
-    "date": "2018-01-05",
-    "steps": 9867
-}, {
-    "date": "2018-01-06",
-    "steps": 7561
-}, {
-    "date": "2018-01-07",
-    "steps": 1287
-}, {
-    "date": "2018-01-08",
-    "steps": 3298
-}, {
-    "date": "2018-01-09",
-    "steps": 5697
-}, {
-    "date": "2018-01-10",
-    "steps": 4878
-}, {
-    "date": "2018-01-11",
-    "steps": 8788
-}, {
-    "date": "2018-01-12",
-    "steps": 9560
-}, {
-    "date": "2018-01-13",
-    "steps": 11687
-}, {
-    "date": "2018-01-14",
-    "steps": 5878
-}, {
-    "date": "2018-01-15",
-    "steps": 9789
-}, {
-    "date": "2018-01-16",
-    "steps": 3987
-}, {
-    "date": "2018-01-17",
-    "steps": 5898
-}, {
-    "date": "2018-01-18",
-    "steps": 9878
-}, {
-    "date": "2018-01-19",
-    "steps": 13687
-}, {
-    "date": "2018-01-20",
-    "steps": 6789
-}, {
-    "date": "2018-01-21",
-    "steps": 4531
-}, {
-    "date": "2018-01-22",
-    "steps": 5856
-}, {
-    "date": "2018-01-23",
-    "steps": 5737
-}, {
-    "date": "2018-01-24",
-    "steps": 9987
-}, {
-    "date": "2018-01-25",
-    "steps": 16457
-}, {
-    "date": "2018-01-26",
-    "steps": 7878
-}, {
-    "date": "2018-01-27",
-    "steps": 6845
-}, {
-    "date": "2018-01-28",
-    "steps": 4659
-}, {
-    "date": "2018-01-29",
-    "steps": 7892
-}, {
-    "date": "2018-01-30",
-    "steps": 7362
-}, {
-    "date": "2018-01-31",
-    "steps": 3268
-}];
 
 chart.dateFormatter.inputDateFormat = "YYYY-MM-dd";
 chart.zoomOutButton.disabled = true;
@@ -233,4 +115,4 @@ label.text = "Pan chart to change date";
 label.x = 90;
 label.y = 50;
 
-});
+}); // end am4core.ready()

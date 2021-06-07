@@ -19,24 +19,32 @@ def ajax():
     end = data['end']
     location = data['location']
     column = data['column']
+
+    energy_sum_data = oracle_db.get_energy_sum(start, end, location)
+
     if '당진' in location:
         data = oracle_db.get_dangjin(start, end, column)
         energy_data = oracle_db.get_dangjin_energy(start, end, location)
+
     elif '울산' in location:
         data = oracle_db.get_ulsan(start, end, column)
         energy_data = oracle_db.get_ulsan_energy(start, end, location)
 
+    barchart_data = []
     chart_data = []
     energy_chart_data = []
+
     # date: new Date(2018, 0, i), open: open, close: close
     # print(data)
     for row in data.itertuples():
         chart_data.append({"date":row[1].to_pydatetime(), "open":row[2], "close":row[3]})
     for row in energy_data.itertuples():
         energy_chart_data.append({"date":row[1].to_pydatetime(), "open":row[2], "close":row[3]})
-    # print("--" * 10)
-    return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data})
+    for row in energy_sum_data.itertuples():
+        barchart_data.append({"date":row[1], "steps":row[2]})
 
+    # print("--" * 10)
+    return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data, "barchart_data":barchart_data})
 
 if __name__ == "__main__":
     app.debug = True
