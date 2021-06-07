@@ -79,11 +79,11 @@ class Database():
         data = pd.read_sql(sql, conn)
         return data
     def get_dangjin_energy(self, start, end, location):
-        if '당진수상 태양광' in location:
+        if '당진수상' in location:
             location = 'dangjin_floating'
-        elif '당진자재창고태양광' in location:
+        elif '당진자재창고' in location:
             location = 'dangjin_warehouse'
-        elif '당진태양광' in location:
+        elif '당진' in location:
             location = 'dangjin'
         sql = """select fc.timedate, NVL(obs.{2}, 0) , fc.{2}
                         from energy_obs obs right outer join energy_fcst fc on obs.timedate = fc.timedate
@@ -94,7 +94,7 @@ class Database():
 
 
     def get_ulsan_energy(self, start, end, location):
-        if '울산태양광' in location:
+        if '울산' in location:
             location = 'ulsan'
         sql = """select fc.timedate, NVL(obs.{2},0) , fc.{2}
                         from energy_obs obs right outer  join energy_fcst fc on obs.timedate = fc.timedate
@@ -105,22 +105,25 @@ class Database():
         return data
 
     def get_energy_sum(self, start, end, location):
-        if '당진수상 태양광' in location:
+        if '당진수상' in location:
             location = 'dangjin_floating'
-        elif '당진자재창고태양광' in location:
+        elif '당진자재창고' in location:
             location = 'dangjin_warehouse'
-        elif '당진태양광' in location:
+        elif '당진' in location:
             location = 'dangjin'
         else:
-            location =  'ulsan'
+            location = 'ulsan'
         sql = """
             select TO_char(timedate, 'YYYY-MM-DD') tt, sum({2})
-            from energy_obs 
+            from energy_fcst
             where timedate between '{0}' and '{1}'
             GROUP by TO_char(timedate, 'YYYY-MM-DD')
             order by tt
         """.format(start, end, location)
+
         data = pd.read_sql(sql, conn)
+        print(sql)
+        print(data)
         return data
 
 # ===============================weather===============================

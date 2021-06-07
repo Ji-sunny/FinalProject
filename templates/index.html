@@ -75,6 +75,7 @@
         }
 
         .left_title {
+            font-size: 14px;
             color: #b9b9b9;
         }
 
@@ -83,6 +84,25 @@
             width: 80%;
         }
 
+        .info {
+            width:24%;
+            display: inline-block;
+        }
+
+        .info_title {
+            font-size: 16px;
+        }
+
+        .info_content {
+            font-size: 30px;
+            height: 40px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .scale {
+            display: inline-block;
+        }
 
     </style>
 </head>
@@ -93,27 +113,36 @@
     </div>
     <br/><br/>
     <div id="all" style="height: 100%; width: 100%; display: flex;">
-        <div id="left" style="height: 100%; width: 20%; border: 1px solid black; display: inline-block; background-color: #38393E; position: fixed;">
+        <div id="left" style="height: 100%; width: 380px; border: 1px solid black; display: inline-block; background-color: #38393E; position: fixed;">
             <div style="width: 350px; margin-left: 30px;">
                 <ul class="col" style="list-style:none;"><br/>
                     <div class="left_title_big">계산 조건</div><br/>
-                    <div class="left_title">날짜</div><br/>
+                    <div class="left_title" style="margin-bottom: 10px;">조건</div>
+                    <select id="rec_weight" class="form-select form-select-sm" aria-label=".form-select-sm example" style="width: 280px; height:30px;">
+                        <option value="1.2" selected>일반 부지</option>
+                        <option value="1.5">건축물 등 기존 시설물</option>
+                        <option value="1.5">유지등 수면</option>
+                        <option value="1">자가용 발전 설비</option>
+                    </select>
+                    <br/><br/>
+                    <div class="left_title" style="margin-bottom: 10px;">날짜</div>
                     <!-- single_daterangepicker -->
                     <div>
                         <input style="width:500px;" id="litepicker" type="hidden"/>
-                    </div><br/><br/><br/>
+                    </div><br/>
                     <!--지도 표시 구역-->
-                    <div class="left_title">위치 선택</div><br/>
+                    <div class="left_title" style="margin-bottom: 10px;">위치 선택</div>
                      <li>
                         <select id="search" style="width: 280px;">
-                            <option value="당진수상태양광" selected="true">당진 수상 태양광</option>
-                            <option value="당진자재창고태양광" selected="False">당진 자재창고 태양광</option>
-                            <option value="당진태양광" selected="False">당진 태양광</option>
-                            <option value="울산태양광" selected="False">울산 태양광</option>
+                            <option value="당진수상" selected="true">당진 수상 태양광</option>
+                            <option value="당진자재창고" selected="False">당진 자재창고 태양광</option>
+                            <option value="당진" selected="False">당진 태양광</option>
+                            <option value="울산" selected="False">울산 태양광</option>
                         </select>
-                    </li>
-                    <li><div style="height:20px;"></div></li>
-                    <li><div id="map" style="width:280px;height:300px;"></div></li>
+                     </li>
+                    <br/>
+                    <div class="left_title" style="margin-bottom: 10px;">지도로 선택</div>
+                    <li><div id="map" style="width:280px;height:250px;"></div></li>
                     <li><div id="check" style="display:none;">당진수상</div></li>
                 </ul>
                 <br/><br/>
@@ -123,15 +152,40 @@
         <div id="right" style="height: 100%; width: 80%; display: inline-block">
 
             <div id="right_size">
-                <ul><br/><br/>
-                    <div id="energy_name" style="font-size: 30px; display: inline-block"><b>당진 수산</b></div> <div style="font-size: 20px; display: inline-block">발전소의 예상치</div>
+                <br/><br/>
+                <div id="energy_name" style="font-size: 30px; display: inline-block; font-weight: bold;"></div>
+                <div style="font-size: 20px; display: inline-block">　태양광 발전소의 예상치</div><br/>
+
+                <div style="display: inline-block; color:#aeacad; font-size: 12px;">기간:　</div><div id="period" style="display: inline-block; color:#aeacad; font-size: 12px;"></div>
+
+                <br/><br/><br/>
+
+                <div style="background-color: #eeeeee; height: 200px; text-align: center;">
                     <br/><br/>
-                </ul>
+                    <div class="info">
+                        <div class="info_title">총 발전량</div><br/>
+                        <div class="info_content" id="energy_all"></div><div class="scale">　kw</div>
+                    </div>
+                    <div class="info">
+                        <div class="info_title">총 수익</div><br/>
+                        <div class="info_content" id="income_all"></div><div class="scale">　원</div>
+                    </div>
+                    <div class="info">
+                        <div class="info_title">평균 일 발전량</div><br/>
+                        <div class="info_content" id="energy_day"></div><div class="scale">　kw</div>
+                    </div>
+                    <div class="info">
+                        <div class="info_title">평균 일일 수익</div><br/>
+                        <div class="info_content" id="income_day" style="border:none;"></div><div class="scale">　원</div>
+                    </div>
+                </div>
+                <br/><br/><br/<br/>
                 <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" data-toggle="tab" id="energy-sum-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">하루 발전량 합계(kw)</a>
                     </li>
                 </ul>
+                <br/><br/>
                 <div class="tab-content">
                     <ul class="tab-pane fade show active" style="list-style:none;">
                         <li id="energy-sum" role="tabpanel" aria-labelledby="pills-energy-tab">
@@ -139,7 +193,7 @@
                         </li>
                     </ul>
                 </div>
-                <br/><br/><br/>
+                <br/><br/><br/><br/>
 
 
                 <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
@@ -147,6 +201,7 @@
                         <a class="nav-link active" data-toggle="tab" id="energy-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">태양광 에너지</a>
                     </li>
                 </ul>
+                <br/><br/>
                 <div class="tab-content">
                     <ul class="tab-pane fade show active" style="list-style:none;">
                         <li id="energy" role="tabpanel" aria-labelledby="pills-energy-tab">
@@ -154,7 +209,7 @@
                         </li>
                     </ul>
                 </div>
-                <br/><br/><br/>
+                <br/><br/><br/><br/><br/><br/>
 
                 <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -170,6 +225,7 @@
                         <a class="nav-link" data-toggle="tab" id="cloud-tab" data-bs-target="#cloud" type="button" role="tab" aria-controls="pills-cloud" aria-selected="false">전운량</a>
                     </li>
                 </ul>
+                <br/><br/>
                 <div class="tab-content">
                     <ul class="tab-pane fade show active" style="list-style:none;">
                         <li id="temperature" role="tabpanel" aria-labelledby="pills-temperature-tab">
@@ -177,7 +233,7 @@
                         </li>
                     </ul>
                 </div>
-                <br/>
+                <br/><br/><br/><br/><br/><br/><br/>
 
             </div>
         </div>
@@ -186,35 +242,15 @@
 
         <!-- 임시 -->
         <input type="hidden" id="execute" value="execute">
+        <input type="hidden" id="column" value="온도">
+        <input type="hidden" id="location" value="당진수산">
 </div>
 
 
 <script src="/static/js/map.js"></script>
 
 <script>
-    $(document).ready(function() {
-        var postdata = {
-            'start':'2021-01-01', 'end':'2021-01-15', 'time':'2021-01-15', 'location':"당진수상 태양광", 'column':'온도'
-        }
-        $('#litepicker').val('2021-01-01 - 2021-01-15');
-        $("#check").text('당진수상 태양광');
-        $.ajax({
-            type: 'POST',
-            url: '{{url_for("ajax")}}',
-            data: JSON.stringify(postdata),
-            dataType : 'JSON',
-            contentType: "application/json",
-            success: function(data){
-                if (data.chart_data.length == 0)
-                    alert("날씨 데이터가 없습니다.");
-                twoChart(data)
-                barChart(data)
-            },
-            error: function(error) {
-                console.log(error)
-            }
-        })
-    })
+    <!-- 적용할 함수 선언 -->
     function twoChart(data) {
         var result = [];
         var energy_result = [];
@@ -311,17 +347,14 @@
 
     function barChart(data) {
         am4core.useTheme(am4themes_animated);
-        // Themes end
-
-        /**
-         * Chart design taken from Samsung health app
-         */
-
+        income_cal(data["barchart_data"])
+        var last = Object.keys(data["barchart_data"]).length
+        var start_date = data["barchart_data"][0]["date"]
+        var end_date = data["barchart_data"][last-1]["date"]
         var chart = am4core.create("barchart", am4charts.XYChart);
         chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
         chart.data = data["barchart_data"]
-
         chart.dateFormatter.inputDateFormat = "YYYY-MM-dd";
         chart.zoomOutButton.disabled = true;
 
@@ -331,11 +364,6 @@
         dateAxis.dateFormats.setKey("day", "d");
         dateAxis.tooltip.hiddenState.properties.opacity = 1;
         dateAxis.tooltip.hiddenState.properties.visible = true;
-
-
-        dateAxis.tooltip.adapter.add("x", function (x, target) {
-            return am4core.utils.spritePointToSvg({ x: chart.plotContainer.pixelX, y: 0 }, chart.plotContainer).x + chart.plotContainer.pixelWidth / 2;
-        })
 
         var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.renderer.inside = true;
@@ -351,9 +379,6 @@
         series.tooltip.pointerOrientation = "vertical";
         series.tooltip.hiddenState.properties.opacity = 1;
         series.tooltip.hiddenState.properties.visible = true;
-        series.tooltip.adapter.add("x", function (x, target) {
-            return am4core.utils.spritePointToSvg({ x: chart.plotContainer.pixelX, y: 0 }, chart.plotContainer).x + chart.plotContainer.pixelWidth / 2;
-        })
 
         var columnTemplate = series.columns.template;
         columnTemplate.width = 30;
@@ -361,32 +386,21 @@
         columnTemplate.column.cornerRadiusTopRight = 20;
         columnTemplate.strokeOpacity = 0;
 
-
         var cursor = new am4charts.XYCursor();
         cursor.behavior = "panX";
         chart.cursor = cursor;
         cursor.lineX.disabled = true;
 
-
-        var middleLine = chart.plotContainer.createChild(am4core.Line);
-        middleLine.strokeOpacity = 1;
-        middleLine.stroke = am4core.color("#000000");
-        middleLine.strokeDasharray = "2,2";
-        middleLine.align = "center";
-        middleLine.zIndex = 1;
-        middleLine.adapter.add("y2", function (y2, target) {
-            return target.parent.pixelHeight;
-        })
-
         cursor.events.on("cursorpositionchanged", updateTooltip);
         dateAxis.events.on("datarangechanged", updateTooltip);
 
         function updateTooltip() {
-            dateAxis.showTooltipAtPosition(0.5);
-            series.showTooltipAtPosition(0.5, 0);
             series.tooltip.validate(); // otherwise will show other columns values for a second
         }
 
+        chart.events.on("datavalidated", function () {
+            dateAxis.zoomToDates(start_date, end_date, false, true);
+        });
 
         var label = chart.plotContainer.createChild(am4core.Label);
         label.x = 90;
@@ -394,6 +408,81 @@
 
     }
 
+    function income_cal(data) {
+        var energy_all = 0;
+        var smp = 80
+        var rec = 10;
+        var rec_weight = $("#rec_weight option:selected").val();
+        for(var i in data)
+            energy_all += data[i]["steps"];
+
+        $('#energy_all').text(comma(energy_all))
+        $('#energy_day').text(comma(Math.round(energy_all/Object.keys(data).length)))
+        $('#income_all').text(comma(energy_all*(smp+rec*rec_weight)))
+        $('#income_day').text(comma(Math.round(energy_all*(smp+rec*rec_weight)/Object.keys(data).length)))
+    }
+
+    <!--default-->
+
+    $(document).ready(function() {
+        var start = '2021-01-01';
+        var end = '2021-01-15';
+        var location = '울산';
+        var column = '온도';
+        var postdata = {
+            'start':start, 'end':end, 'time':'2021-01-15', 'location':location, 'column':column
+        }
+
+        $("#period").text(start + '~' + end)
+        $('#litepicker').val('2021-01-01 - 2021-01-15');
+        $("#check").text(location);
+        $("#location").val(location);
+        $("#energy_name").text(location)
+
+        $.ajax({
+            type: 'POST',
+            url: '{{url_for("ajax")}}',
+            data: JSON.stringify(postdata),
+            dataType : 'JSON',
+            contentType: "application/json",
+            success: function(data){
+                if (data.chart_data.length == 0)
+                    alert("날씨 데이터가 없습니다.");
+                twoChart(data)
+                barChart(data)
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        })
+    })
+
+    $('#rec_weight').change(function(){
+        var time = $('#litepicker').val();
+        start = time.substr(0, 10)
+        end = time.substr(13, 10)
+
+        var location = $('#location').val();
+        var column = $('#column').val();
+        var postdata = {
+            'start':start, 'end':end, 'time':time, 'location':location, 'column':column
+        }
+
+        $("#energy_name").text(location);
+
+        $.ajax({
+            type: 'POST',
+            url: '{{url_for("ajax")}}',
+            data: JSON.stringify(postdata),
+            dataType : 'JSON',
+            contentType: "application/json",
+            success: function(data){
+                if (data.chart_data.length == 0)
+                    alert("날씨 데이터가 없습니다.");
+                income_cal(data["barchart_data"])
+            }
+        })
+    });
 
 
             // 변경시
@@ -401,9 +490,13 @@
         var time = $('#litepicker').val();
         start = time.substr(0, 10)
         end = time.substr(13, 10)
-        var location = $('#check')[0].innerHTML;
+        $("#period").text(start + '~' + end)
+
+        var location = $('#location').val();
+        var column = $('#column').val();
+        console.log(location, column)
+
         $("#energy_name").text(location);
-        var column = document.getElementsByClassName("active")[0].innerText;
         var postdata = {
             'start':start, 'end':end, 'time':time, 'location':location, 'column':column
         }
@@ -422,13 +515,30 @@
         })
     });
 
+    $('#temperature-tab').click(function(){
+        $('#column').val("온도")
+    });
+
+    $('#humidity-tab').click(function(){
+        $('#column').val("습도")
+    });
+
+    $('#hr-tab').click(function(){
+        $('#column').val("일조")
+    });
+
+    $('#cloud-tab').click(function(){
+        $('#column').val("전운량")
+    });
+
     $('#temperature-tab, #humidity-tab, #hr-tab, #cloud-tab').click(function(){
         var time = $('#litepicker').val();
         start = time.substr(0, 10)
         end = time.substr(13, 10)
-        var location = $('#check')[0].innerHTML;
+        var location = $('#location').val();
+        var column = $('#column').val();
+        console.log(location, column)
         $("#energy_name").text(location);
-        var column = document.getElementsByClassName("active")[0].innerText;
         var postdata = {
             'start':start, 'end':end, 'time':time, 'location':location, 'column':column
         }
@@ -505,8 +615,27 @@
         var loc = $(this).val();
         console.log(loc)
         $("#check").text(loc)
+        $("#energy_name").text(loc)
+        $("#location").val(loc)
         $("#execute").trigger("click")
     });
+
+    function comma(num){
+    var len, point, str;
+
+    num = num + "";
+    point = num.length % 3 ;
+    len = num.length;
+
+    str = num.substring(0, point);
+    while (point < len) {
+        if (str != "") str += ",";
+        str += num.substring(point, point + 3);
+        point += 3;
+    }
+
+    return str;
+    }
 
 </script>
 

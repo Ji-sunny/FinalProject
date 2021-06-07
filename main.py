@@ -43,7 +43,7 @@ def ajax():
         barchart_data.append({"date":row[1], "steps":row[2]})
 
     # print("--" * 10)
-    return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data})
+    return jsonify({"chart_data":chart_data, "energy_chart_data":energy_chart_data, "barchart_data":barchart_data})
 
 @app.route("/select")
 def selectmain():
