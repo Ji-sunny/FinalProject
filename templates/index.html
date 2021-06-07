@@ -40,10 +40,17 @@
 
 
     <!-- 다혜는 테스트 중-->
-    <link href="../static/css/select2.css" rel="stylesheet"/>
-    <script src="../static/js/select2.js"></script>
     <!-- 다혜는 테스트 중-->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style>
 
+    @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+        * {
+           font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
 </head>
 <body>
 
@@ -57,21 +64,20 @@
             <div style="height:300px;">
                 <li class="col-lg"><p>
                     <!-- single_daterangepicker -->
-                    <input id="litepicker" type="hidden"></input>
-                    <script src="/static/js/litepicker.js"></script>
+                    <input style="width:300px;" id="litepicker" type="hidden"></input>
                 </p></li>
             </div>
             <!--지도 표시 구역-->
              <li>
-                <select id="search">
+                <select id="search" style="width: 300px;">
                     <option value="당진수상태양광" selected="true">당진 수상 태양광</option>
                     <option value="당진자재창고태양광" selected="False">당진 자재창고 태양광</option>
                     <option value="당진태양광" selected="False">당진 태양광</option>
                     <option value="울산태양광" selected="False">울산 태양광</option>
                 </select>
             </li>
-
-            <li><div id="map" style="width:100%;height:400px;"></div></li>
+            <li><div style="height:20px;"></div></li>
+            <li><div id="map" style="width:300px;height:400px;"></div></li>
             <li><div id="check" style="display:none;">당진수상</div></li>
 
         </ul>
@@ -443,5 +449,7 @@ $("#search").change(function(){
 });
 
     </script>
+
+<script src="/static/js/litepicker.js"></script>
 </body>
 </html>
