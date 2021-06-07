@@ -103,6 +103,10 @@ class Database():
 
         data = pd.read_sql(sql, conn)
         return data
+    
+    def write_new_fcst(self, fcst_table_name, ):
+        my_latest_date = pd.read_sql("select * from {} where 1=1 and timedate in select(max(timedate)")
+
 # ===============================weather===============================
 
 class Weather:
