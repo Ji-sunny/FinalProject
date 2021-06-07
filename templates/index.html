@@ -121,19 +121,20 @@
         </div>
         <div style="height: 100%; width: 20%; display: inline-block"></div>
         <div id="right" style="height: 100%; width: 80%; display: inline-block">
-            <div id="right_size"><br/><br/>
 
+            <div id="right_size">
+                <ul><br/><br/>
+                    <div id="energy_name" style="font-size: 30px; display: inline-block"><b>당진 수산</b></div> <div style="font-size: 20px; display: inline-block">발전소의 예상치</div>
+                    <br/><br/>
+                </ul>
                 <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link active" data-toggle="tab" id="energy-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">태양광 에너지</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link disabled" data-toggle="tab" id="energy_name" type= role="tab" aria-controls="pills-temperature" aria-selected="true">당진 수상</a>
+                        <a class="nav-link active" data-toggle="tab" id="energy-sum-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">하루 발전량 합계(kw)</a>
                     </li>
                 </ul>
                 <div class="tab-content">
                     <ul class="tab-pane fade show active" style="list-style:none;">
-                        <li id="energy" role="tabpanel" aria-labelledby="pills-energy-tab">
+                        <li id="energy-sum" role="tabpanel" aria-labelledby="pills-energy-tab">
                             <div class="chart" id="barchart" style="height: 350px;"></div>
                         </li>
                     </ul>
@@ -144,9 +145,6 @@
                 <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" data-toggle="tab" id="energy-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">태양광 에너지</a>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <a class="nav-link disabled" data-toggle="tab" id="energy_name" type= role="tab" aria-controls="pills-temperature" aria-selected="true">당진 수상</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -363,24 +361,12 @@
         columnTemplate.column.cornerRadiusTopRight = 20;
         columnTemplate.strokeOpacity = 0;
 
-        columnTemplate.adapter.add("fill", function (fill, target) {
-            var dataItem = target.dataItem;
-            if (dataItem.valueY > 6000) {
-                return chart.colors.getIndex(0);
-            }
-            else {
-                return am4core.color("#a8b3b7");
-            }
-        })
 
         var cursor = new am4charts.XYCursor();
         cursor.behavior = "panX";
         chart.cursor = cursor;
         cursor.lineX.disabled = true;
 
-        chart.events.on("datavalidated", function () {
-            dateAxis.zoomToDates(new Date(2018, 0, 21), new Date(2018, 1, 1), false, true);
-        });
 
         var middleLine = chart.plotContainer.createChild(am4core.Line);
         middleLine.strokeOpacity = 1;
@@ -403,7 +389,6 @@
 
 
         var label = chart.plotContainer.createChild(am4core.Label);
-        label.text = "Pan chart to change date";
         label.x = 90;
         label.y = 50;
 
