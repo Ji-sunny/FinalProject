@@ -122,8 +122,8 @@ class Database():
         """.format(start, end, location)
 
         data = pd.read_sql(sql, conn)
-        print(sql)
-        print(data)
+        # print(sql)
+        # print(data)
         return data
 
 # ===============================weather===============================

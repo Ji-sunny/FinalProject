@@ -85,7 +85,7 @@
         }
 
         .info {
-            width:24%;
+            width:32%;
             display: inline-block;
         }
 
@@ -102,7 +102,7 @@
             border-right: 1px solid #aeacad;
         }
 
-        #income_all, #energy_all, #income_day, #energy_day {
+        #charge_before, #charge_minus, #charge_after {
             font-size: 30px;
             display: inline-block;
         }
@@ -126,16 +126,16 @@
                     <div class="left_title_big">계산 조건</div><br/>
                     <div class="left_title" style="margin-bottom: 10px;">조건</div>
                     <select id="rec_weight" class="form-select form-select-sm" aria-label=".form-select-sm example" style="width: 280px; height:30px;">
-                        <option value="1.2" selected>일반 부지</option>
-                        <option value="1.5">건축물 등 기존 시설물</option>
-                        <option value="1.5">유지등 수면</option>
-                        <option value="1">자가용 발전 설비</option>
+                        <option value="1" selected>주택용(저압)</option>
+                        <option value="1.5">주택용(고압)</option>
                     </select>
+                    <div class="left_title" style="margin-bottom: 10px;">월 평균 전기사용량(kw)</div>
+                    <input tyep="number" id="usage" value="80000" style="width: 280px;">
                     <br/><br/>
                     <div class="left_title" style="margin-bottom: 10px;">날짜</div>
                     <!-- single_daterangepicker -->
                     <div>
-                        <input style="width:500px;" id="litepicker" type="hidden" value="2021-01-01 - 2021-01-15"/>
+                        <input style="width:500px;" id="litepicker" type="hidden" value="2021-06-01 - 2021-06-30"/>
                     </div><br/>
                     <!--지도 표시 구역-->
                     <div class="left_title" style="margin-bottom: 10px;">위치 선택</div>
@@ -170,20 +170,16 @@
                 <div style="background-color: #eeeeee; height: 200px; text-align: center;">
                     <br/><br/>
                     <div class="info">
-                        <div class="info_title">총 발전량</div><br/>
-                        <div class="info_content"><div id="energy_all"></div><div class="scale">　kw</div></div>
+                        <div class="info_title">월 평균 전기 요금</div><br/>
+                        <div class="info_content"><div id="charge_before"></div><div class="scale">　원</div></div>
                     </div>
                     <div class="info">
-                        <div class="info_title">총 수익</div><br/>
-                        <div class="info_content"><div id="income_all"></div><div class="scale">　원</div></div>
+                        <div class="info_title">패널로 절약한 요금</div><br/>
+                        <div class="info_content"><div id="charge_minus"></div><div class="scale">　원</div></div>
                     </div>
                     <div class="info">
-                        <div class="info_title">평균 일 발전량</div><br/>
-                        <div class="info_content"><div id="energy_day"></div><div class="scale">　kw</div></div>
-                    </div>
-                    <div class="info">
-                        <div class="info_title">평균 일일 수익</div><br/>
-                        <div class="info_content" style="border: none"><div id="income_day" style="border:none;"></div><div class="scale">　원</div></div>
+                        <div class="info_title">최종 납부 금액</div><br/>
+                        <div class="info_content" style="border: none"><div id="charge_after"></div><div class="scale">　원</div></div>
                     </div>
                 </div>
                 <br/><br/><br/><br/>
@@ -417,16 +413,57 @@
 
     function income_cal(data) {
         var energy_all = 0;
-        var smp = 80
-        var rec = 10;
-        var rec_weight = $("#rec_weight option:selected").val();
+        var weight = $("#rec_weight option:selected").val();
         for(var i in data)
             energy_all += data[i]["steps"];
+        var charge;
+        var charge_after;
+        usage = $('#usage').val()
+        var usage_after = usage-energy_all;
 
-        $('#energy_all').text(comma(energy_all))
-        $('#energy_day').text(comma(Math.round(energy_all/Object.keys(data).length)))
-        $('#income_all').text(comma(energy_all*(smp+rec*rec_weight)))
-        $('#income_day').text(comma(Math.round(energy_all*(smp+rec*rec_weight)/Object.keys(data).length)))
+        console.log(usage, usage_after, energy_all)
+
+        if (weight == 1) {
+            if (usage <= 200) {
+                charge = 910 + 88.3*usage;
+            } else if (usage > 400) {
+                charge = 7300 + 275.6*usage;
+            } else {
+                charge = 1600 + 182.9*usage;
+            }
+        } else {
+            if (usage <= 200) {
+                charge = 730 + 73.3*usage;
+            } else if (usage > 400) {
+                charge = 6060 + 210.6*usage;
+            } else {
+                charge = 1260 + 142.3*usage;
+            }
+        }
+
+        if (weight == 1) {
+            if (usage_after <= 200) {
+                charge_after = 910 + 88.3*usage_after;
+            } else if (usage_after > 400) {
+                charge_after = 7300 + 275.6*usage_after;
+            } else {
+                charge_after = 1600 + 182.9*usage_after;
+            }
+        } else {
+            if (usage_after <= 200) {
+                charge_after = 730 + 73.3*usage_after;
+            } else if (usage_after > 400) {
+                charge_after = 6060 + 210.6*usage_after;
+            } else {
+                charge_after = 1260 + 142.3*usage_after;
+            }
+        }
+
+        console.log(charge, charge_after)
+
+        $('#charge_before').text(comma(Math.round(charge)))
+        $('#charge_minus').text(comma(Math.round(charge-charge_after)))
+        $('#charge_after').text(comma(Math.round(charge_after)))
     }
 
     <!--default-->
@@ -440,7 +477,7 @@
         var location = '울산';
         var column = '온도';
         var postdata = {
-            'start':start, 'end':end, 'time':'2021-01-15', 'location':location, 'column':column
+            'start':start, 'end':end, 'time':end, 'location':location, 'column':column
         }
 
         $("#period").text(start + '~' + end)
@@ -466,7 +503,7 @@
         })
     })
 
-    $('#rec_weight').change(function(){
+    $('#rec_weight, #usage').change(function(){
         var time = $('#litepicker').val();
         start = time.substr(0, 10)
         end = time.substr(13, 10)
