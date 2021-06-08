@@ -1,10 +1,10 @@
 var HOME_PATH = window.HOME_PATH || '.';
 var MARKER_SPRITE_POSITION = {
-        "당진태양광": [37.054421, 126.518231],
-        "당진수상태양광": [37.05317223592023, 126.51053057117839],
-        "당진자재창고태양광": [37.060285426198305, 126.50053404845316],
+        "당진": [37.054421, 126.518231],
+        "당진수상": [37.05317223592023, 126.51053057117839],
+        "당진자재창고": [37.060285426198305, 126.50053404845316],
         //37.050753, 126.510299 (당진묶음)
-        "울산태양광": [35.477651, 129.380778]
+        "울산": [35.477651, 129.380778]
     };
 
 var map = new naver.maps.Map('map', {
@@ -92,6 +92,8 @@ function getClickHandler(seq) {
             infoWindow.open(map, marker);
             console.log(marker);
             $("#check").text(marker.title);
+            $("#location").val(marker.title);
+            $("energy_name").text(marker.title);
             $(":contains(marker.title)").trigger("click");
             $("#execute").trigger("click")
         }
