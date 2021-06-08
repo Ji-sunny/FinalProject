@@ -7,6 +7,9 @@ const picker = new Litepicker({
     inlineMode: true, // 항상 열려있게
     lang: "ko-kr", // 언어 설정
     maxDays: 365, // 최대 선택 일자 수
+    // date_1: "2021-01-01",
+    // date_2: '2012-01-15',
+
     // scrollToDate: true,
     // showTooltip: true,
     // autoRefresh: true,
