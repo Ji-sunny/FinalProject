@@ -135,7 +135,7 @@
                     <div class="left_title" style="margin-bottom: 10px;">날짜</div>
                     <!-- single_daterangepicker -->
                     <div>
-                        <input style="width:500px;" id="litepicker" type="hidden"/>
+                        <input style="width:500px;" id="litepicker" type="hidden" value="2021-01-01 - 2021-01-15"/>
                     </div><br/>
                     <!--지도 표시 구역-->
                     <div class="left_title" style="margin-bottom: 10px;">위치 선택</div>
@@ -186,7 +186,7 @@
                         <div class="info_content" style="border: none"><div id="income_day" style="border:none;"></div><div class="scale">　원</div></div>
                     </div>
                 </div>
-                <br/><br/><br/<br/>
+                <br/><br/><br/><br/>
                 <ul class="nav nav-tabs" style="list-style:none;" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active" data-toggle="tab" id="energy-sum-tab" data-bs-target="#temperature" type="button" role="tab" aria-controls="pills-temperature" aria-selected="true">하루 발전량 합계(kw)</a>
@@ -257,7 +257,7 @@
 <script src="/static/js/map.js"></script>
 
 <script>
-    <!-- 적용할 함수 선언 -->
+    // <!-- 적용할 함수 선언 -->
     function twoChart(data) {
         var result = [];
         var energy_result = [];
@@ -373,9 +373,9 @@
         dateAxis.tooltip.hiddenState.properties.visible = true;
 
         var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.renderer.inside = true;
-        valueAxis.renderer.labels.template.fillOpacity = 0.3;
-        valueAxis.renderer.grid.template.strokeOpacity = 0;
+        // valueAxis.renderer.inside = true;
+        // valueAxis.renderer.labels.template.fillOpacity = 0.3;
+        // valueAxis.renderer.grid.template.strokeOpacity = 0;
         valueAxis.min = 0;
         valueAxis.cursorTooltipEnabled = false;
 
@@ -432,8 +432,11 @@
     <!--default-->
 
     $(document).ready(function() {
-        var start = '2021-01-01';
-        var end = '2021-01-15';
+        var time = $('#litepicker').val();
+        start = time.substr(0, 10)
+        end = time.substr(13, 10)
+        // var start = '2021-01-01';
+        // var end = '2021-01-15';
         var location = '울산';
         var column = '온도';
         var postdata = {
@@ -441,7 +444,6 @@
         }
 
         $("#period").text(start + '~' + end)
-        $('#litepicker').val('2021-01-01 - 2021-01-15');
         $("#check").text(location);
         $("#location").val(location);
         $("#energy_name").text(location)
