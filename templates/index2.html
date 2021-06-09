@@ -274,6 +274,10 @@
         var chart = am4core.create("xychart_1", am4charts.XYChart);
         var energy_chart = am4core.create("xychart_2", am4charts.XYChart);
 
+        color_list = [am4core.color("#03b6fc"), am4core.color("#D65DB1")]
+        chart.colors.list = color_list;
+        energy_chart.colors.list = color_list;
+
         chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
         energy_chart.hiddenState.properties.opacity = 0;
         // 범례
@@ -324,7 +328,7 @@
         series2.dataFields.valueY = "open";
         series2.sequencedInterpolation = true;
         series2.defaultState.transitionDuration = 1500;
-        series2.stroke = chart.colors.getIndex(6);
+        series2.stroke = '#D65DB1';
         series2.tensionX = 0.8;
         series2.name = "실제 날씨"
         series2.legendSettings.labelText = "[bold {color}]{name}[/]";
@@ -336,6 +340,7 @@
         energy_series2.defaultState.transitionDuration = 1500;
         energy_series2.stroke = chart.colors.getIndex(6);
         energy_series2.tensionX = 0.8;
+        energy_series2.stroke = '#D65DB1';
         energy_series2.name = "실제 태양광 발전량"
         energy_series2.legendSettings.labelText = "[bold {color}]{name}[/]";
 
