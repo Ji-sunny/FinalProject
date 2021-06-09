@@ -3,8 +3,6 @@ import urllib
 import urllib.request
 import json
 from dbmodule import dbModule, conn
-import sqlalchemy
-from sqlalchemy import sql
 
 oracle_db = dbModule.Database()
 conn = conn.conn()
@@ -14,7 +12,14 @@ conn = conn.conn()
 ServiceKey = "eTQfDTfcoqpr+U5Shz2IeDH0NIT3W2dtq/MWCu9gMP+LjUL3nIYXFujSkR22lCxaXAeQqyuYjfvkVFxG3oewfQ=="
 url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst'
 
-def get_tomorrow_forecast(nx, ny, today_date, tomorrow_date):
+# will be executing for every 00:00:00 AM as a batch program.
+def get_tomorrow_forecast(location, today_date, tomorrow_date):
+    if location == 'dangjin':
+        nx = 51
+        ny = 113
+    elif location == 'ulsan':
+        nx = 104
+        ny = 83
 
     today_date = today_date.replace('-', '')
 
@@ -39,12 +44,13 @@ def get_tomorrow_forecast(nx, ny, today_date, tomorrow_date):
 
     response = urllib.request.urlopen(url + queryParams).read()
     response = json.loads(response)
+    # print("weatherAPI.py -- response:", response)
 
     fcst_df = pd.DataFrame()
     # fcst_df['Forecast_time'] = [f'{date} {hour}:00' for hour in range(24)]
-    fcst_df['forecasttime'] = [ tomorrow_date+' '+'%02d'%hour+':00:00' for hour in range(24)]
+    fcst_df['forecasttime'] = [tomorrow_date+' '+'%02d'%hour+':00:00' for hour in range(24)]
     row_idx = 0
-    
+
     for i, data in enumerate(response['response']['body']['items']['item']):
         if i > 19:
             if data['category']=='REH':
@@ -63,32 +69,40 @@ def get_tomorrow_forecast(nx, ny, today_date, tomorrow_date):
                 fcst_df.loc[row_idx, 'windspeed'] = float(data['fcstValue'])
                 # print('category:WindSpeed,',data['category'], 'baseTime:',data['baseTime'], ', fcstTime:', data['fcstTime'], ', fcstValue:', data['fcstValue'], '\n')
                 row_idx+=3
-
-    fcst_df = fcst_df.interpolate().iloc[:24]
+    fcst_df = fcst_df.iloc[:24]
+    fcst_df['forecasttime'] = pd.to_datetime(fcst_df['forecasttime'])
+    fcst_df.interpolate(method='linear', inplace=True, limit_direction='both')
 
     # check first if there was an already a same forecast.
     # if there is, replace it with the latest forecast.
     # if none, append directly
-    
-    for i in range(len(fcst_df)):
-            check_for_same_sql = "delete from forecast_by_api where forecasttime = TO_DATE(\'{}\')".format(fcst_df["forecasttime"][i])
-            sqlquery = sql.expression.text(check_for_same_sql)
-            conn.execute(sqlquery)
-            # print("deleted!")
-    
-    # save the dataframe to Database.
-    fcst_df.to_sql(name='forecast_by_api', con=conn, if_exists='append', index=False, 
-    dtype={
-        'forecasttime':sqlalchemy.DateTime(),
-        'humidity':sqlalchemy.types.Float(),
-        'cloud':sqlalchemy.types.Float(),
-        'temperature':sqlalchemy.types.Float(),
-        'winddirection':sqlalchemy.types.Float(),
-        'windspeed':sqlalchemy.types.Float()
-    })
 
-
+    # check_table_existency_sql = "SELECT COUNT(*) FROM USER_TABLES WHERE TABLE_NAME = UPPER(\'{}\')".format(location+"_forecast_by_api")
+    # table_existency = pd.read_sql(check_table_existency_sql, conn)
+    # # print("table_existency:", table_existency)
+    #
+    # if table_existency.values[0] == 1:
+    #     for i in range(len(fcst_df)):
+    #             check_for_same_sql = "delete from {}_forecast_by_api where forecasttime = TO_DATE(\'{}\')".format(location, fcst_df["forecasttime"][i])
+    #             sqlquery = sql.expression.text(check_for_same_sql)
+    #             conn.execute(sqlquery)
+    #             # print("deleted!")
+    # else:
+    #     pass
+    #
+    # # save the dataframe to Database.
+    # fcst_df.to_sql(name=location+'_forecast_by_api', con=conn, if_exists='append', index=False,
+    # dtype={
+    #     'forecasttime':sqlalchemy.DateTime(),
+    #     'humidity':sqlalchemy.types.Float(),
+    #     'cloud':sqlalchemy.types.Float(),
+    #     'temperature':sqlalchemy.types.Float(),
+    #     'winddirection':sqlalchemy.types.Float(),
+    #     'windspeed':sqlalchemy.types.Float()
+    # })
 
     return fcst_df
 
-fcst_df = get_tomorrow_forecast(51, 113, '2021-06-07', '2021-06-08')
+# test
+# dangjin_fcst_df = get_tomorrow_forecast('dangjin', '2021-06-07', '2021-06-08')
+# ulsan_fcst_df = get_tomorrow_forecast('ulsan', '2021-06-07', '2021-06-08')
