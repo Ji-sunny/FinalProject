@@ -13,9 +13,9 @@
    
    
 ▶ 프로젝트 개발 환경
-   >OS: Ubuntu, windows
-   >Database: Oracle DB
-   >Web: Flask
+   >OS: Ubuntu, windows    
+   >Database: Oracle DB     
+   >Web: Flask    
    
    
 ▶ 메인 페이지  
